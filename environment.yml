@@ -6,6 +6,7 @@ dependencies:
   - python=3.12
   - pandas
   - matplotlib
+  - shiny
   - jupyter
   - notebook
   - ipykernel
