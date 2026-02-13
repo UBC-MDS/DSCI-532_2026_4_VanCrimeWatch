@@ -1,1 +1,3 @@
-# DSCI_532_4_VanCrimeWatch
+# VanCrimeWatch Dashboard Project
+
+VanCrimeWatch is an interactive dashboard, providing a geospatial analysis of crime hotspots across different neighborhoods in Vancouver. It's goal is focused on assiting new business owners visualize which areas that more prone to specific types of crimes, enabling them to make adequate risk assessments when deciding where to open their businesses. They will be able to use this tool to make comparisons across neighborhoods, filter by crime types and also observe crime patterns from the last 3 years (2023-2025), to make more informed, business decisions. More generally, this dashbaord acts as a tool serving anyone interested in understanding local crime patterns. Using Python and Shiny, the dashboard effectively communicates data-driven insights on complex crime patterns in the Vancouver area.
