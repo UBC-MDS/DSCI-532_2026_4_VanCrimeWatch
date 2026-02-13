@@ -50,7 +50,7 @@ happy for any support that they can get.
 
 ### Write Documentation
 
-data_fixr could always use more documentation, whether as
+VanCrimeWatch could always use more documentation, whether as
 part of the official documentation, in docstrings, or even on the web in blog
 posts, articles, and such. Just
 [open an issue](https://github.com/UBC-MDS/DSCI_532_2026_4_VanCrimeWatch/issues)
@@ -64,5 +64,53 @@ the issue templates, please use that. Remember that this is a volunteer-driven
 project and everybody has limited time.
 
 ## Get Started
-#insert set up/environment instructions here
 
+To make changes to our dashboard, first fork and then clone the repository:
+
+```shell
+git clone git@github.com:your_github_username/DSCI_532_2026_4_VanCrimeWatch.git
+cd DSCI_532_2026_4_VanCrimeWatch
+```
+
+### Setting Up the Environment
+
+```bash
+conda env create -f environment.yml
+conda activate vancrimewatch
+```
+
+### Create a New Branch
+
+Create a branch for local development using the default branch (typically `main`) as a starting point. Use `fix` or `feat` as a prefix for your branch name.
+
+```shell
+git checkout main
+git checkout -b fix-name-of-your-bugfix
+```
+
+Now you can make your changes locally.
+
+Commit your changes and push your branch to GitHub. Please use [semantic
+   commit messages](https://www.conventionalcommits.org/).
+
+```shell
+git add .
+git commit -m "fix: summarize your changes"
+git push -u origin fix-name-of-your-bugfix
+```
+
+Open the link displayed in the message when pushing your new branch in order
+to submit a pull request.
+
+### Running the Dashboard Locally
+
+```bash
+cd DSCI_532_2026_4_VanCrimeWatch
+conda activate vancrimewatch
+
+shiny run src/app.py --reload
+```
+
+## Attribution and Code of Conduct
+
+The following was attributed from [AI_bias_in_farming](https://github.com/skysheng7/AI_bias_in_farming/blob/main/CONTRIBUTING.md). Please note that the VanCrimeWatch Dashboard is released with a [Code of Conduct](https://github.com/UBC-MDS/DSCI_532_2026_4_VanCrimeWatch/blob/main/CODE_OF_CONDUCT.md). By contributing to this project you agree to abide by its terms.
