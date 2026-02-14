@@ -51,17 +51,17 @@ Also additional derived variables, such as day of week trends, time-of-day trend
 
 ![Dashboard Sketch](../img/sketch.png)
 
-### Sidebar(filters) and chart description:
+### Sidebar (Filters) and Chart Description:
 | **Filter Category**  | **Functionality** |
 |--|--|
 | **Neighbourhood** | - Select one or more neighbourhoods (dropdown with “Select All” option) <br> - Selected neighbourhoods displayed as tags |
-| **Timeline**      | - Select time range (e.g., last week, last month, last year) <br> - Select display frequency (daily, weekly, monthly)    |
-| **Crime Type**    | - Dropdown to select specific crime type or category <br> - Can also filter via interactive chart                        |
+| **Timeline** | - Select time range (e.g., last week, last month, last year) <br> - Select display frequency (daily, weekly, monthly) |
+| **Crime Type** | - Dropdown to select specific crime type or category <br> - Can also filter via interactive chart |
 
 
 
 | Chart| Description |
 |--|--|
-| **Map**               | - Interactive map of Vancouver with crime statistics visualized using circles <br> - Option to display exact crime locations <br> - Updates dynamically based on selected filters |
+| **Map** | - Interactive map of Vancouver with crime statistics visualized using circles <br> - Option to display exact crime locations <br> - Updates dynamically based on selected filters |
 | **Bar / Donut Chart** | - Interactive chart displaying crime counts <br> - Updates based on selected neighbourhoods, timeline, and crime type |
-| **Timeline**          | - Visualizes crime trends over selected time range, neighbourhoods, and crime types <br> - Displays exact numerical values for trend data                                         |
+| **Timeline** | - Visualizes crime trends over selected time range, neighbourhoods, and crime types <br> - Displays exact numerical values for trend data |
