@@ -24,7 +24,7 @@ conda activate vancrimewatch
 shiny run src/app.py --reload
 ```
 
-**4) Access the dashboard through the linked displayed in your terminal:**
+**4) Access the dashboard through the link displayed in your terminal:**
 
 ```bash
 http://127.0.0.1:8000
