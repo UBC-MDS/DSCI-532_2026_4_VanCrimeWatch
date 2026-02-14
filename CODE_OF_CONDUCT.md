@@ -42,7 +42,7 @@ The severity of the consequences will depend on the nature and frequency of the 
 
 ### Procedure for reporting and dealing with unacceptable behavior
 
-Instances of abusive, harassing or otherwise unacceptable behavior may be reported by contacting any member of the project team directly or by e-mail: **asrivas1@student.ubc.ca**. 
+Instances of abusive, harassing or otherwise unacceptable behavior may be reported by contacting any member of the project team directly or by e-mail: **nourabd@student.ubc.ca**. 
 
 When reporting an incident, please include your name and contact information, a description of the incident and any additional context that might be helpful. All complaints will be reviewed and investigated promptly and will result in a response that is deemed appropriate to the circumstances. All reports will be kept strictly confidential. 
 
