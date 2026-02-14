@@ -51,29 +51,17 @@ Also additional derived variables, such as day of week trends, time-of-day trend
 
 ![Dashboard Sketch](../img/sketch.png)
 
-### Sidebar (Filters):
+### Sidebar(filters) and chart description:
+| **Filter Category**  | **Functionality** |
+|--|--|
+| **Neighbourhood** | - Select one or more neighbourhoods (dropdown with “Select All” option) <br> - Selected neighbourhoods displayed as tags |
+| **Timeline**      | - Select time range (e.g., last week, last month, last year) <br> - Select display frequency (daily, weekly, monthly)    |
+| **Crime Type**    | - Dropdown to select specific crime type or category <br> - Can also filter via interactive chart                        |
 
-**NEIGHBOURHOOD**
-- Select one or more neighbourhoods (select all button + dropdown)
-- A list of currently selected neighbourhoods as tags
 
-**TIMELINE**
-- Select data to display: last week/last month/last year etc
-- Select display type: daily/monthly/weekly
 
-**CRIME TYPE**
-dropdown to select crime type or category (also can be done from interactive chart)
-
-### Charts:
-
-**MAP**
-- Interactive map of Vancouver with crime statistics visualised through circles
-- Optional display exact crime locations
-- Changes according to selection 
-
-**BAR/DONUT CHART**
-- Crime numbers displayed on interactive chart
-
-**TIMELINE**
-- Visualising crime trends over selected options/neighbourhoods/crime types
-- Also includes numbers for exact trend values
+| Chart| Description |
+|--|--|
+| **Map**               | - Interactive map of Vancouver with crime statistics visualized using circles <br> - Option to display exact crime locations <br> - Updates dynamically based on selected filters |
+| **Bar / Donut Chart** | - Interactive chart displaying crime counts <br> - Updates based on selected neighbourhoods, timeline, and crime type |
+| **Timeline**          | - Visualizes crime trends over selected time range, neighbourhoods, and crime types <br> - Displays exact numerical values for trend data                                         |
