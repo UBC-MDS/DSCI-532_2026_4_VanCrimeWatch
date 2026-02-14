@@ -66,3 +66,7 @@ Also additional derived variables, such as day of week trends, time-of-day trend
 | **Map** | - Interactive map of Vancouver with crime statistics visualized using circles <br> - Option to display exact crime locations <br> - Updates dynamically based on selected filters |
 | **Bar / Donut Chart** | - Interactive chart displaying crime counts <br> - Updates based on selected neighbourhoods, timeline, and crime type |
 | **Timeline** | - Visualizes crime trends over selected time range, neighbourhoods, and crime types <br> - Displays exact numerical values for trend data |
+
+KPIs: 
+- Number and percentage of crime-specific incidents and comparison to total
+- Trend percent increase/decrease
