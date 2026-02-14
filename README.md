@@ -36,7 +36,7 @@ The dataset used is pulled from publicly available data from [Vancouver Police D
 
 ## Contributors
 
-- Sarisha Dash
+- Sarisha Das
 - Jennifer Tsang
 - Prabuddha Tamhane
 - Nour Shawky
