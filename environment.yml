@@ -1,12 +1,15 @@
 name: vancrimewatch
 channels:
   - conda-forge
-  - defaults
 dependencies:
-  - python=3.12
   - pandas
-  - matplotlib
-  - shiny
-  - jupyter
-  - notebook
   - ipykernel
+  - jupyter
+  - shiny
+  - python=3.12
+  - matplotlib
+  - notebook
+  - ipyleaflet
+  - shinywidgets
+  - plotly
+  - anywidget
