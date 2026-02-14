@@ -11,24 +11,52 @@ app_ui = ui.page_fluid(
     ui.include_css(appdir / "styles.css"),
     ui.layout_sidebar(
         ui.sidebar(
+            ui.p("NEIGHBOURHOOD"),
+            ui.div(
+                "Select one or more neighbourhoods (select all button + dropdown)",
+                ui.br(), 
+                "A list of currently selected neighbourhoods as tags"),
+            ui.p("TIMELINE"),
+            ui.div(
+                "Select data to display: last week/last month/last year etc",
+                ui.br(), 
+                "Select display type: daily/monthly/weekly"),
             ui.input_select(
-                "year",  # This is the ID we use in the server
+                "year",  
                 "Select Year:",
                 {"2023": "2023", "2024": "2024", "2025": "2025"},
                 selected="2023",
                 multiple=False,
             ),
+            ui.p("CRIME TYPE"),
+            "Dropdown to select crime type or category (also can be done from interactive chart)",
             title="Dashboard Filters",
             bg="#ffffff",
-            open="desktop", # "closed" works too, but "desktop" shows it by default on larger screens
+            open="desktop", 
         ),
-        output_widget("map"),
-        ui.value_box(
-            "Total Crime",
-            ui.output_text("yearly_crime_total"),
-            ui.output_text("selected_year_label"),
-            showcase=output_widget("sparkline"),
-            showcase_layout="bottom",
+        ui.card(
+            "MAP: Interactive map of Vancouver with crime statistics visualised through circles. ",
+            "Changes according to selection. ",
+            "Optional display exact crime locations.",
+            output_widget("map"),
+        ),
+        ui.layout_columns(
+            ui.card(
+                "CHARTS",
+                ui.layout_columns(
+                    ui.card(
+                        ui.p("BAR/DONUT CHART"),
+                        ui.p("Crime numbers displayed on interactive chart."),
+                    ),
+                    ui.value_box(
+                        "TIMELINE: Total Crime",
+                        ui.output_text("yearly_crime_total"),
+                        ui.output_text("selected_year_label"),
+                        showcase=output_widget("sparkline"),
+                        showcase_layout="bottom",
+                    ),
+                )
+            ),
         ),
         fillable_mobile=True,
     ),
