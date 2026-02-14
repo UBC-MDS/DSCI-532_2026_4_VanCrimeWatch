@@ -33,20 +33,35 @@ Also additional derived variables, such as day of week trends, time-of-day trend
 
 ## Research Questions & Usage Scenarios
 
+### User Story: New Business Owner
 
+**Persona:**
+Jennie is an independent baker planning to open her first small cafe in Vancouver. As a first-time business owner, she prioritizes the safety of her staff and customers. She needs to identify which neighbourhoods have lower rates of property crime so she can choose a location that minimizes the risk of break-ins and ensures a welcoming environment for her customers.
 
+**Usage Scenario:**
+When Jennie logs into the VanCrimeWatch app, she is presented with a high-level spatial overview of criminal activity across Vancouver. Wanting to protect her physical storefront, she uses the "Crime Type" filter to specifically highlight "Break and Enter Commercial" incidents over the past three years.
 
+As she explores the interactive map, she notices a high density of markers in the Downtown Eastside but observes a surprising "pocket of safety" in a specific area of Mount Pleasant she hadn't considered before. By toggling the neighbourhood view, she compares the frequency of nighttime versus daytime crimes to see if her early-morning baking shifts would be safe.
 
+Based on these insights, Jennie decides to narrow her real estate search to Mount Pleasant, feeling confident that she can justify a slightly higher rent in exchange for the lower crime rates she visualized in the app.
 
+**User Stories:**
 
-## Exploratory Data Analysis 
+> User Story 1: As a **business owner**, I want to **filter crimes by neighbourhood** so that I can **identify which areas of the city are statistically safest for a new storefront**.
 
+> User Story 2: As a **baker working early hours**, I want to **filter crimes by type (e.g., Commercial B&E)** so that I can **specifically avoid areas where my business equipment and inventory would be at high risk**.
 
+> User Story 3: As a **visual learner**, I want to **view crime data on an interactive map** so that I can **understand the spatial relationship between potential cafe locations and recent criminal activity**.
 
+---
 
+## Exploratory Data Analysis
 
+To address the business-owner research question -- *How would new business owners choose between various localities in Vancouver depending on the crime rate and types of crime?* -- we performed an exploratory analysis in [`notebooks/VancouverCrimeAnalysis.ipynb`](../notebooks/VancouverCrimeAnalysis.ipynb).
 
+**Analysis:** We filtered 2023-2025 crime data to five business-relevant types: *Break and Enter Commercial*, *Theft from Vehicle*, *Other Theft*, *Mischief*, and *Theft of Vehicle*. The **Central Business District** has the highest business-crime volume, driven by *Other Theft* and *Theft from Vehicle*, while **Musqueam**, **Shaughnessy**, and **South Cambie** consistently record the fewest incidents. Year-over-year trends are relatively stable across all neighbourhoods. Bucketing by time of day reveals that the **Afternoon (12-17h)** and **Evening (18-23h)** periods see the most business-related crime, and aggregating by month shows a **seasonal uptick during warmer months (May-October)**.
 
+**Reflection:** These findings support the dashboard's value for prospective business owners by enabling them to identify low-risk areas, compare crime composition, examine temporal patterns, and track whether conditions are improving or worsening over time.
 
 ## App Sketch & Description
 
@@ -55,7 +70,7 @@ Also additional derived variables, such as day of week trends, time-of-day trend
 ### Sidebar (Filters) and Chart Description:
 | **Filter Category**  | **Functionality** |
 |--|--|
-| **Neighbourhood** | - Select one or more neighbourhoods (dropdown with “Select All” option) <br> - Selected neighbourhoods displayed as tags |
+| **Neighbourhood** | - Select one or more neighbourhoods (dropdown with "Select All" option) <br> - Selected neighbourhoods displayed as tags |
 | **Timeline** | - Select time range (e.g., last week, last month, last year) <br> - Select display frequency (daily, weekly, monthly) |
 | **Crime Type** | - Dropdown to select specific crime type or category <br> - Can also filter via interactive chart |
 
