@@ -56,6 +56,7 @@ app_ui = ui.page_fluid(
                     ui.card(
                         ui.p("BAR/DONUT CHART"),
                         ui.p("Crime numbers displayed on interactive chart."),
+                        output_widget("donut_plot"),
                     ),
                     ui.value_box(
                         "TIMELINE: Total Crime",
@@ -87,6 +88,18 @@ def server(input, output, session):
         except FileNotFoundError:
             return None
 
+    @render_widget  
+    def donut_plot():  
+        donutplot = alt.Chart(
+            base_df # update this df to the filter df after!
+        ).mark_arc(
+            innerRadius=50
+        ).encode(
+            theta="count()",
+            color="TYPE:N",
+        )
+        return donutplot
+    
     @render.text
     def yearly_crime_total():
         df = filtered_data()
