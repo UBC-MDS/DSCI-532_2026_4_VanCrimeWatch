@@ -7,6 +7,12 @@ import pandas as pd
 
 appdir = Path(__file__).parent
 
+filename = f"combined_crime_data_2023_2025.csv"
+path = appdir.parent / "data" / "processed" / filename
+base_df = pd.read_csv(path)
+
+neighbourhoods = base_df['NEIGHBOURHOOD'].unique.tolist()
+
 app_ui = ui.page_fluid(
     ui.include_css(appdir / "styles.css"),
     ui.layout_sidebar(
