@@ -11,17 +11,22 @@ filename = f"combined_crime_data_2023_2025.csv"
 path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
-neighbourhoods = base_df['NEIGHBOURHOOD'].unique.tolist()
+neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
 
 app_ui = ui.page_fluid(
     ui.include_css(appdir / "styles.css"),
     ui.layout_sidebar(
         ui.sidebar(
-            ui.p("NEIGHBOURHOOD"),
             ui.div(
-                "Select one or more neighbourhoods (select all button + dropdown)",
-                ui.br(), 
-                "A list of currently selected neighbourhoods as tags"),
+                ui.input_selectize(  
+                "selectize",  
+                "Select Neighbourhoods:",  
+                neighbourhoods,  
+                multiple=True,
+                options={
+                    "placeholder": "Displaying All"
+                }
+            )),
             ui.p("TIMELINE"),
             ui.div(
                 "Select data to display: last week/last month/last year etc",
