@@ -21,12 +21,15 @@ app_ui = ui.page_fluid(
                 "Select data to display: last week/last month/last year etc",
                 ui.br(), 
                 "Select display type: daily/monthly/weekly"),
-            ui.input_select(
+            ui.input_checkbox_group(
                 "year",  
                 "Select Year:",
-                {"2023": "2023", "2024": "2024", "2025": "2025"},
-                selected="2023",
-                multiple=False,
+                {
+                    "2023": "2023", 
+                    "2024": "2024", 
+                    "2025": "2025"
+                },
+                selected=["2023", "2024", "2025"], # default selects all the years
             ),
             ui.p("CRIME TYPE"),
             "Dropdown to select crime type or category (also can be done from interactive chart)",
