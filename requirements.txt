@@ -1,0 +1,17 @@
+# Core Web Framework
+shiny>=0.11.0
+shinywidgets==0.7.1
+htmltools==0.6.0
+starlette==0.52.1
+uvicorn==0.40.0
+
+# Data Analysis & Visualization
+pandas==3.0.0
+numpy==2.4.2
+plotly==6.5.2
+ipyleaflet==0.20.0
+
+# Utilities
+pyyaml==6.0.3
+requests==2.32.5
+python-dateutil==2.9.0.post0
