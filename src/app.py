@@ -116,7 +116,7 @@ def server(input, output, session):
     
     @render.text
     def selected_year_label():
-        return f"in {input.year()}"
+        return f"in {input.input_year()}"
 
     @render_widget
     def sparkline():
