@@ -13,6 +13,7 @@ path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
 neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
+crimetypes = base_df['TYPE'].unique()().tolist()
 crimetypes = base_df['TYPE'].unique().tolist()
 
 app_ui = ui.page_fluid(
@@ -39,15 +40,40 @@ app_ui = ui.page_fluid(
                     "placeholder": "Displaying All",
                     "plugins": ["clear_button"]
                 }),
+                ui.input_selectize(  
+                id = "input_neighbourhood",  
+                label = "Select Neighbourhoods:",  
+                choices = neighbourhoods,  
+                multiple=True,
+                options={
+                    "placeholder": "Displaying All",
+                    "plugins": ["clear_button"]
+                }
+            )),
+            ui.input_selectize(
+                id = "input_crime_type",
+                label = "Select Crime Types:", 
+                choices = crimetypes, 
+                multiple = True,
+                options={
+                    "placeholder": "Displaying All",
+                    "plugins": ["clear_button"]
+                }),
             ui.p("TIMELINE"),
             ui.div(
                 "Select data to display: last week/last month/last year etc",
                 ui.br(), 
                 "Select display type: daily/monthly/weekly"),
             ui.input_checkbox_group(
+<<<<<<< feat/crime-donut-plot
                 id = "input_year",  
                 label = "Select Year:",
                 choices = {
+=======
+                id = "input_year",  
+                label = "Select Year:",
+                choices = {
+>>>>>>> dev
                     "2023": "2023", 
                     "2024": "2024", 
                     "2025": "2025"
@@ -69,6 +95,7 @@ app_ui = ui.page_fluid(
                 ui.layout_columns(
                     ui.card(
                         ui.p("Types of Crime"),
+                        output_widget("donut_plot"),
                         output_widget("donut_plot"),
                     ),
                     ui.value_box(
@@ -155,6 +182,7 @@ def server(input, output, session):
     @render.text
     def selected_year_label():
         return f"in {input.input_year()}"
+        return f"in {input.input_year()}"
 
     @render_widget
     def sparkline():
@@ -188,3 +216,4 @@ def server(input, output, session):
         return fig
 
 app = App(app_ui, server)
+
