@@ -60,7 +60,7 @@ app_ui = ui.page_fluid(
             bg="#ffffff",
             open="desktop", 
         ),
-        ui.card("Crime Map"),
+        ui.card("Crime Map",
             output_widget("map")
         ),
         ui.layout_columns(
