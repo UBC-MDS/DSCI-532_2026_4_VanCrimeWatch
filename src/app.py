@@ -11,7 +11,8 @@ filename = f"combined_crime_data_2023_2025.csv"
 path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
-neighbourhoods = base_df['NEIGHBOURHOOD'].unique.tolist()
+neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
+crimetypes = base_df['TYPE'].unique().tolist()
 
 app_ui = ui.page_fluid(
     ui.include_css(appdir / "styles.css"),
@@ -37,8 +38,15 @@ app_ui = ui.page_fluid(
                 },
                 selected=["2023", "2024", "2025"], # default selects all the years
             ),
-            ui.p("CRIME TYPE"),
-            "Dropdown to select crime type or category (also can be done from interactive chart)",
+            ui.input_selectize(
+                "selectize",
+                "Select Crime Types:", 
+                choices = crimetypes, 
+                multiple = True,
+                options={
+                "placeholder": "Displaying All",
+                "plugins": ["clear_button"]
+                }),
             title="Dashboard Filters",
             bg="#ffffff",
             open="desktop", 
