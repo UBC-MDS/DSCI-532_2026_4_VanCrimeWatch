@@ -194,12 +194,9 @@ def server(input, output, session):
             hourly_df = df_copy[~((df_copy["HOUR"] == 0) & (df_copy["MINUTE"] == 0))]
             grouped = hourly_df.groupby(["year", "HOUR"]).size().reset_index(name="count")
             grouped = grouped.sort_values(["year", "HOUR"])
-            hour_labels = ["12AM"] + [f"{h}AM" for h in range(1, 12)] + ["12PM"] + [f"{h}PM" for h in range(1, 12)]
-            grouped["hour_label"] = grouped["HOUR"].map(lambda h: hour_labels[h])
-            fig = px.line(grouped, x="hour_label", y="count", color="year",
+            fig = px.line(grouped, x="HOUR", y="count", color="year",
                           title="Avg Crime Count by Hour of Day",
-                          labels={"hour_label": "Hour", "count": "Avg Incidents", "year": "Year"},
-                          category_orders={"hour_label": hour_labels})
+                          labels={"HOUR": "Hour", "count": "Avg Incidents", "year": "Year"})
 
         fig.update_traces(
             line_width=2,
@@ -218,7 +215,9 @@ def server(input, output, session):
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         )
         if agg == "hourly":
-            fig.update_layout(xaxis_tickangle=-45)
+            tick_hours = list(range(0, 24, 3))
+            tick_labels = ["12AM", "3AM", "6AM", "9AM", "12PM", "3PM", "6PM", "9PM"]
+            fig.update_layout(xaxis=dict(tickvals=tick_hours, ticktext=tick_labels))
         return fig
 
 app = App(app_ui, server)
