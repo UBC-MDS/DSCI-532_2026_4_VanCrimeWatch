@@ -39,10 +39,12 @@ app_ui = ui.page_fluid(
                     "plugins": ["clear_button"]
                 }),
             ui.p("TIMELINE"),
-            ui.div(
-                "Select data to display: last week/last month/last year etc",
-                ui.br(), 
-                "Select display type: daily/monthly/weekly"),
+            ui.input_radio_buttons(
+                "time_display",
+                "Aggregate By:",
+                {"monthly": "Monthly", "weekly": "Weekly (Day of Week)", "hourly": "Hourly"},
+                selected="monthly",
+            ),
             ui.input_checkbox_group(
                 id = "input_year",  
                 label = "Select Year:",
@@ -71,12 +73,9 @@ app_ui = ui.page_fluid(
                         ui.p("BAR/DONUT CHART"),
                         ui.p("Crime numbers displayed on interactive chart."),
                     ),
-                    ui.value_box(
-                        "TIMELINE: Total Crime",
-                        ui.output_text("yearly_crime_total"),
-                        ui.output_text("selected_year_label"),
-                        showcase=output_widget("sparkline"),
-                        showcase_layout="bottom",
+                    ui.card(
+                        ui.card_header("Crime Timeline"),
+                        output_widget("timeline_chart"),
                     ),
                 )
             ),
@@ -146,6 +145,53 @@ def server(input, output, session):
             margin=dict(t=0, r=0, l=0, b=0),
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
+        )
+        return fig
+
+    @render_widget
+    def timeline_chart():
+        df = filtered_data()
+        if df is None or (hasattr(df, 'empty') and df.empty):
+            return px.line(title="No data available")
+
+        agg = input.time_display()
+
+        if agg == "monthly":
+            grouped = df.groupby("MONTH").size().reset_index(name="count")
+            month_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
+                         7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
+            grouped["label"] = grouped["MONTH"].map(month_map)
+            grouped = grouped.sort_values("MONTH")
+            fig = px.line(grouped, x="label", y="count",
+                          title="Crime Count by Month",
+                          labels={"label": "Month", "count": "Incidents"})
+
+        elif agg == "weekly":
+            df_copy = df.copy()
+            df_copy["date"] = pd.to_datetime(
+                df_copy[["YEAR", "MONTH", "DAY"]].rename(
+                    columns={"YEAR": "year", "MONTH": "month", "DAY": "day"}
+                ),
+                errors="coerce",
+            )
+            df_copy["weekday"] = df_copy["date"].dt.day_name()
+            day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+            grouped = df_copy.groupby("weekday").size().reindex(day_order).reset_index()
+            grouped.columns = ["weekday", "count"]
+            fig = px.line(grouped, x="weekday", y="count",
+                          title="Crime Count by Day of Week",
+                          labels={"weekday": "Day", "count": "Incidents"})
+
+        else:  # hourly
+            grouped = df.groupby("HOUR").size().reset_index(name="count")
+            grouped = grouped.sort_values("HOUR")
+            fig = px.line(grouped, x="HOUR", y="count",
+                          title="Crime Count by Hour of Day",
+                          labels={"HOUR": "Hour (0-23)", "count": "Incidents"})
+
+        fig.update_layout(
+            height=350,
+            margin=dict(t=40, r=20, l=40, b=40),
         )
         return fig
 
