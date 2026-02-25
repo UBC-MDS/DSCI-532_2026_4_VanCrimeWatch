@@ -35,18 +35,15 @@ app_ui = ui.page_fluid(
                 selected="2023",
                 multiple=False,
             ),
-            ui.p("CRIME TYPE"),
             ui.input_selectize(
                 "selectize",
                 "Select Crime Types:", 
                 choices = crimetypes, 
                 multiple = True,
-                #options={"plugins": ["clear_button"]},
                 options={
                 "placeholder": "Displaying All",
                 "plugins": ["clear_button"]
                 }),
-            #"Dropdown to select crime type or category (also can be done from interactive chart)",
             title="Dashboard Filters",
             bg="#ffffff",
             open="desktop", 
