@@ -12,6 +12,7 @@ path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
 neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
+crimetypes = base_df['TYPE'].unique().tolist()
 
 app_ui = ui.page_fluid(
     ui.include_css(appdir / "styles.css"),
@@ -24,7 +25,8 @@ app_ui = ui.page_fluid(
                 neighbourhoods,  
                 multiple=True,
                 options={
-                    "placeholder": "Displaying All"
+                    "placeholder": "Displaying All",
+                    "plugins": ["clear_button"]
                 }
             )),
             ui.p("TIMELINE"),
@@ -32,15 +34,25 @@ app_ui = ui.page_fluid(
                 "Select data to display: last week/last month/last year etc",
                 ui.br(), 
                 "Select display type: daily/monthly/weekly"),
-            ui.input_select(
+            ui.input_checkbox_group(
                 "year",  
                 "Select Year:",
-                {"2023": "2023", "2024": "2024", "2025": "2025"},
-                selected="2023",
-                multiple=False,
+                {
+                    "2023": "2023", 
+                    "2024": "2024", 
+                    "2025": "2025"
+                },
+                selected=["2023", "2024", "2025"], # default selects all the years
             ),
-            ui.p("CRIME TYPE"),
-            "Dropdown to select crime type or category (also can be done from interactive chart)",
+            ui.input_selectize(
+                "selectize",
+                "Select Crime Types:", 
+                choices = crimetypes, 
+                multiple = True,
+                options={
+                "placeholder": "Displaying All",
+                "plugins": ["clear_button"]
+                }),
             title="Dashboard Filters",
             bg="#ffffff",
             open="desktop", 
