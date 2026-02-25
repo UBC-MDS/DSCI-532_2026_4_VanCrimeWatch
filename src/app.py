@@ -194,9 +194,12 @@ def server(input, output, session):
             hourly_df = df_copy[~((df_copy["HOUR"] == 0) & (df_copy["MINUTE"] == 0))]
             grouped = hourly_df.groupby(["year", "HOUR"]).size().reset_index(name="count")
             grouped = grouped.sort_values(["year", "HOUR"])
-            fig = px.line(grouped, x="HOUR", y="count", color="year",
+            hour_labels = ["12AM"] + [f"{h}AM" for h in range(1, 12)] + ["12PM"] + [f"{h}PM" for h in range(1, 12)]
+            grouped["hour_label"] = grouped["HOUR"].map(lambda h: hour_labels[h])
+            fig = px.line(grouped, x="hour_label", y="count", color="year",
                           title="Avg Crime Count by Hour of Day",
-                          labels={"HOUR": "Hour (0-23)", "count": "Avg Incidents", "year": "Year"})
+                          labels={"hour_label": "Hour", "count": "Avg Incidents", "year": "Year"},
+                          category_orders={"hour_label": hour_labels})
 
         fig.update_traces(
             line_width=2,
@@ -205,7 +208,7 @@ def server(input, output, session):
         )
         fig.update_layout(
             height=350,
-            margin=dict(t=40, r=20, l=50, b=40),
+            margin=dict(t=40, r=20, l=50, b=60),
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
             hovermode="x unified",
@@ -214,6 +217,8 @@ def server(input, output, session):
             font=dict(family="Inter, sans-serif"),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         )
+        if agg == "hourly":
+            fig.update_layout(xaxis_tickangle=-45)
         return fig
 
 app = App(app_ui, server)
