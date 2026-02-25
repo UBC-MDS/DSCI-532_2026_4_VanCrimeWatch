@@ -155,19 +155,20 @@ def server(input, output, session):
             return px.line(title="No data available")
 
         agg = input.time_display()
+        df_copy = df.copy()
+        df_copy["year"] = df_copy["YEAR"].astype(str)
+        month_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
+                     7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
 
         if agg == "monthly":
-            grouped = df.groupby("MONTH").size().reset_index(name="count")
-            month_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
-                         7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
+            grouped = df_copy.groupby(["year", "MONTH"]).size().reset_index(name="count")
             grouped["label"] = grouped["MONTH"].map(month_map)
             grouped = grouped.sort_values("MONTH")
-            fig = px.line(grouped, x="label", y="count",
-                          title="Crime Count by Month",
-                          labels={"label": "Month", "count": "Incidents"})
+            fig = px.line(grouped, x="label", y="count", color="year",
+                          title="Avg Crime Count by Month",
+                          labels={"label": "Month", "count": "Avg Incidents", "year": "Year"})
 
         elif agg == "weekly":
-            df_copy = df.copy()
             df_copy["date"] = pd.to_datetime(
                 df_copy[["YEAR", "MONTH", "DAY"]].rename(
                     columns={"YEAR": "year", "MONTH": "month", "DAY": "day"}
@@ -176,22 +177,35 @@ def server(input, output, session):
             )
             df_copy["weekday"] = df_copy["date"].dt.day_name()
             day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-            grouped = df_copy.groupby("weekday").size().reindex(day_order).reset_index()
-            grouped.columns = ["weekday", "count"]
-            fig = px.line(grouped, x="weekday", y="count",
-                          title="Crime Count by Day of Week",
-                          labels={"weekday": "Day", "count": "Incidents"})
+            grouped = df_copy.groupby(["year", "weekday"]).size().reset_index(name="count")
+            grouped["weekday"] = pd.Categorical(grouped["weekday"], categories=day_order, ordered=True)
+            grouped = grouped.sort_values("weekday")
+            fig = px.line(grouped, x="weekday", y="count", color="year",
+                          title="Avg Crime Count by Day of Week",
+                          labels={"weekday": "Day", "count": "Avg Incidents", "year": "Year"})
 
         else:  # hourly
-            grouped = df.groupby("HOUR").size().reset_index(name="count")
+            grouped = df_copy.groupby(["year", "HOUR"]).size().reset_index(name="count")
             grouped = grouped.sort_values("HOUR")
-            fig = px.line(grouped, x="HOUR", y="count",
-                          title="Crime Count by Hour of Day",
-                          labels={"HOUR": "Hour (0-23)", "count": "Incidents"})
+            fig = px.line(grouped, x="HOUR", y="count", color="year",
+                          title="Avg Crime Count by Hour of Day",
+                          labels={"HOUR": "Hour (0-23)", "count": "Avg Incidents", "year": "Year"})
 
+        fig.update_traces(
+            line_width=2,
+            mode="lines+markers",
+            marker=dict(size=5),
+        )
         fig.update_layout(
             height=350,
-            margin=dict(t=40, r=20, l=40, b=40),
+            margin=dict(t=40, r=20, l=50, b=40),
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            hovermode="x unified",
+            xaxis=dict(showgrid=False),
+            yaxis=dict(gridcolor="rgba(0,0,0,0.08)", gridwidth=1),
+            font=dict(family="Inter, sans-serif"),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         )
         return fig
 
