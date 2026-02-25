@@ -13,7 +13,6 @@ path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
 neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
-crimetypes = base_df['TYPE'].unique()().tolist()
 crimetypes = base_df['TYPE'].unique().tolist()
 
 app_ui = ui.page_fluid(
@@ -21,25 +20,6 @@ app_ui = ui.page_fluid(
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
-                ui.input_selectize(  
-                id = "input_neighbourhood",  
-                label = "Select Neighbourhoods:",  
-                choices = neighbourhoods,  
-                multiple=True,
-                options={
-                    "placeholder": "Displaying All",
-                    "plugins": ["clear_button"]
-                }
-            )),
-            ui.input_selectize(
-                id = "input_crime_type",
-                label = "Select Crime Types:", 
-                choices = crimetypes, 
-                multiple = True,
-                options={
-                    "placeholder": "Displaying All",
-                    "plugins": ["clear_button"]
-                }),
                 ui.input_selectize(  
                 id = "input_neighbourhood",  
                 label = "Select Neighbourhoods:",  
@@ -89,7 +69,6 @@ app_ui = ui.page_fluid(
                 ui.layout_columns(
                     ui.card(
                         ui.p("Types of Crime"),
-                        output_widget("donut_plot"),
                         output_widget("donut_plot"),
                     ),
                     ui.value_box(
@@ -159,6 +138,7 @@ def server(input, output, session):
             tooltip=["TYPE", "COUNT"]
         ).properties(
             width="container", 
+            height=300,
             usermeta={'embedOptions': {'actions': False}},     
         )
 
@@ -175,7 +155,6 @@ def server(input, output, session):
     
     @render.text
     def selected_year_label():
-        return f"in {input.input_year()}"
         return f"in {input.input_year()}"
 
     @render_widget
@@ -210,4 +189,3 @@ def server(input, output, session):
         return fig
 
 app = App(app_ui, server)
-
