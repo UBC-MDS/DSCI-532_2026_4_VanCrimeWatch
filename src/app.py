@@ -20,9 +20,9 @@ app_ui = ui.page_fluid(
         ui.sidebar(
             ui.div(
                 ui.input_selectize(  
-                "selectize",  
-                "Select Neighbourhoods:",  
-                neighbourhoods,  
+                id = "input_neighbourhood",  
+                label = "Select Neighbourhoods:",  
+                choices = neighbourhoods,  
                 multiple=True,
                 options={
                     "placeholder": "Displaying All",
@@ -35,9 +35,9 @@ app_ui = ui.page_fluid(
                 ui.br(), 
                 "Select display type: daily/monthly/weekly"),
             ui.input_checkbox_group(
-                "year",  
-                "Select Year:",
-                {
+                id = "input_year",  
+                label = "Select Year:",
+                choices = {
                     "2023": "2023", 
                     "2024": "2024", 
                     "2025": "2025"
@@ -45,13 +45,13 @@ app_ui = ui.page_fluid(
                 selected=["2023", "2024", "2025"], # default selects all the years
             ),
             ui.input_selectize(
-                "selectize",
-                "Select Crime Types:", 
+                id = "input_crime_type",
+                label = "Select Crime Types:", 
                 choices = crimetypes, 
                 multiple = True,
                 options={
-                "placeholder": "Displaying All",
-                "plugins": ["clear_button"]
+                    "placeholder": "Displaying All",
+                    "plugins": ["clear_button"]
                 }),
             title="Dashboard Filters",
             bg="#ffffff",
@@ -92,15 +92,19 @@ def server(input, output, session):
     
     @reactive.calc
     def filtered_data():
-        selected_year = input.year()
-        filename = f"crimedata_csv_AllNeighbourhoods_{selected_year}.csv"
-        path = appdir.parent / "data" / "raw" / filename
-        
-        try:
-            return pd.read_csv(path)
-        except FileNotFoundError:
-            return None
+        selected_years = list(input.input_year())
+        selected_crimes = list(input.input_crime_type())
+        selected_neighbourhoods = list(input.input_neighbourhood())
 
+        df = base_df
+        if selected_years:
+            df = df[df['YEAR'].astype(str).isin(selected_years)]
+        if selected_crimes:
+            df = df[df['TYPE'].isin(selected_crimes)]
+        if selected_neighbourhoods:
+            df = df[df['NEIGHBOURHOOD'].isin(selected_neighbourhoods)]
+        return df
+    
     @render.text
     def yearly_crime_total():
         df = filtered_data()
