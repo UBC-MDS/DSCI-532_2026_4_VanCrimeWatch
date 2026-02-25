@@ -65,15 +65,9 @@ app_ui = ui.page_fluid(
                 ui.br(), 
                 "Select display type: daily/monthly/weekly"),
             ui.input_checkbox_group(
-<<<<<<< feat/crime-donut-plot
                 id = "input_year",  
                 label = "Select Year:",
                 choices = {
-=======
-                id = "input_year",  
-                label = "Select Year:",
-                choices = {
->>>>>>> dev
                     "2023": "2023", 
                     "2024": "2024", 
                     "2025": "2025"
