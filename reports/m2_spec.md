@@ -4,24 +4,24 @@
 
 | #   | Job Story                       | Status         | Notes                         |
 | --- | ------------------------------- | -------------- | ----------------------------- |
-| 1   | When I … I want to … so I can … | ✅ Implemented |                               |
-| 2   | When I … I want to … so I can … | 🔄 Revised     | Changed from X to Y because … |
-| 3   | When I … I want to … so I can … | ⏳ Pending M3  |                               |
+| 1   | As a business owner, I want to filter crimes by neighbourhood so that I can identify which areas of the city are statistically safest for a new storefront. | ⏳ Pending  |                               |
+| 2   | As a baker working early hours, I want to filter crimes by type (e.g., Commercial B&E) so that I can specifically avoid areas where my business equipment and inventory would be at high risk. | ⏳ Pending      |  |
+| 3   | As a visual learner, I want to view crime data on an interactive map so that I can understand the spatial relationship between potential cafe locations and recent criminal activity. | ⏳ Pending  |                 might have to update         |
 
 ### 2. Component Inventory
 
 | ID            | Type          | Shiny widget / renderer | Depends on                   | Job story  |
 | ------------- | ------------- | ----------------------- | ---------------------------- | ---------- |
-| `input_neighbourhood`    | Input         | `ui.input_selectize(multiple=True)` | —                                                       | |
-| `input_crime_type`       | Input         | `ui.input_selectize(multiple=True)` | —                                                       |
-| `input_year`             | Input         | `ui.input_checkbox_group()`         | —                                                       |
-| `input_time_agg`         | Input         | `ui.input_radio_buttons()`          | —                                                       |
-| `filtered_data`          | Reactive calc | `@reactive.calc`                    | `input_neighbourhood`, `input_crime_type`, `input_year` |
-| `output_map`             | Output        | `@render.ui` (leaflet)              | `filtered_data`                                         |
-| `output_donut`           | Output        | `@render.plot`                      | `filtered_data`                                         |
-| `output_timeline`        | Output        | `@render.plot`                      | `filtered_data`, `input_time_agg`                       |
-| `output_kpi_most_common` | Output        | `@render.text`                      | `filtered_data`                                         |
-| `output_kpi_safest_area` | Output        | `@render.text`                      | `filtered_data`                                         |
+| `input_neighbourhood`    | Input         | `ui.input_selectize(multiple=True)` | —                                                       |#1 |
+| `input_crime_type`       | Input         | `ui.input_selectize(multiple=True)` | —                                                       |#2|
+| `input_year`             | Input         | `ui.input_checkbox_group()`         | —                                                       |#3|
+| `input_time_agg`         | Input         | `ui.input_radio_buttons()`          | —                                                       |#3|
+| `filtered_data`          | Reactive calc | `@reactive.calc`                    | `input_neighbourhood`, `input_crime_type`, `input_year` | #1,#2,#3|
+| `output_map`             | Output        | `@render.ui` (leaflet)              | `filtered_data`                                         |#1, #3|
+| `output_donut`           | Output        | `@render.plot`                      | `filtered_data`                                         |#2|
+| `output_timeline`        | Output        | `@render.plot`                      | `filtered_data`, `input_time_agg`                       |#2|
+| `output_kpi_most_common` | Output        | `@render.text`                      | `filtered_data`                                         |#1,#2|
+| `output_kpi_safest_area` | Output        | `@render.text`                      | `filtered_data`                                         |#3|
 
 ### 3. Reactivity Diagram
 
@@ -53,7 +53,7 @@ TD --> TIMELINE
 
 ### 4. Calculation Details
 
-We have one `@reactive.calc` in our workflow `filtered_data` which controls all of our charts display. It is the common dataframe of which we show different view to the user.
+We have one `@reactive.calc` in our workflow `filtered_data` which controls all of our charts display. It is the common dataframe, of which we show different views to the user.
 
 Depends on:
 - Input Year (`input_year : list[str]`): 
@@ -67,6 +67,7 @@ Depends on:
     - Eg. Fairview, Oakridge.
     - default: all
 - Input Crime Types (`input_crime : list[str]`): list of selected crime types
+    - List of selected crime types (Multiple Select Dropdown)
     - The user can select one or more crime types and the dataframe will be filtered accordingly. Thus only the selected types will be displayed across all charts. 
     - Eg. Break and Enter Commercial, Theft of Vehicle
     - default: all
