@@ -29,6 +29,15 @@ app_ui = ui.page_fluid(
                     "plugins": ["clear_button"]
                 }
             )),
+            ui.input_selectize(
+                id = "input_crime_type",
+                label = "Select Crime Types:", 
+                choices = crimetypes, 
+                multiple = True,
+                options={
+                    "placeholder": "Displaying All",
+                    "plugins": ["clear_button"]
+                }),
             ui.p("TIMELINE"),
             ui.div(
                 "Select data to display: last week/last month/last year etc",
@@ -44,15 +53,6 @@ app_ui = ui.page_fluid(
                 },
                 selected=["2023", "2024", "2025"], # default selects all the years
             ),
-            ui.input_selectize(
-                id = "input_crime_type",
-                label = "Select Crime Types:", 
-                choices = crimetypes, 
-                multiple = True,
-                options={
-                    "placeholder": "Displaying All",
-                    "plugins": ["clear_button"]
-                }),
             title="Dashboard Filters",
             bg="#ffffff",
             open="desktop", 
