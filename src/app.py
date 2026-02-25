@@ -169,7 +169,6 @@ def server(input, output, session):
             grouped["label"] = grouped["MONTH"].map(month_map)
             grouped = grouped.sort_values(["year", "MONTH"])
             fig = px.line(grouped, x="label", y="count", color="year",
-                          title="Avg Crime Count by Month",
                           labels={"label": "Month", "count": "Avg Incidents", "year": "Year"},
                           category_orders={"label": month_order})
 
@@ -185,7 +184,6 @@ def server(input, output, session):
             grouped["weekday"] = pd.Categorical(grouped["weekday"], categories=day_order, ordered=True)
             grouped = grouped.sort_values(["year", "weekday"])
             fig = px.line(grouped, x="weekday", y="count", color="year",
-                          title="Avg Crime Count by Day of Week",
                           labels={"weekday": "Day", "count": "Avg Incidents", "year": "Year"},
                           category_orders={"weekday": day_order})
 
@@ -195,7 +193,6 @@ def server(input, output, session):
             grouped = hourly_df.groupby(["year", "HOUR"]).size().reset_index(name="count")
             grouped = grouped.sort_values(["year", "HOUR"])
             fig = px.line(grouped, x="HOUR", y="count", color="year",
-                          title="Avg Crime Count by Hour of Day",
                           labels={"HOUR": "Hour", "count": "Avg Incidents", "year": "Year"})
 
         fig.update_traces(
@@ -205,7 +202,7 @@ def server(input, output, session):
         )
         fig.update_layout(
             height=350,
-            margin=dict(t=40, r=20, l=50, b=60),
+            margin=dict(t=10, r=20, l=50, b=60),
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
             hovermode="x unified",
