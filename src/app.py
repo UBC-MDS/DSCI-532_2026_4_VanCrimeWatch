@@ -11,34 +11,54 @@ filename = f"combined_crime_data_2023_2025.csv"
 path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
-neighbourhoods = base_df['NEIGHBOURHOOD'].unique.tolist()
+neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
+crimetypes = base_df['TYPE'].unique().tolist()
 
 app_ui = ui.page_fluid(
     ui.include_css(appdir / "styles.css"),
     ui.layout_sidebar(
         ui.sidebar(
-            ui.p("NEIGHBOURHOOD"),
             ui.div(
-                "Select one or more neighbourhoods (select all button + dropdown)",
-                ui.br(), 
-                "A list of currently selected neighbourhoods as tags"),
+                ui.input_selectize(  
+                id = "input_neighbourhood",  
+                label = "Select Neighbourhoods:",  
+                choices = neighbourhoods,  
+                multiple=True,
+                options={
+                    "placeholder": "Displaying All",
+                    "plugins": ["clear_button"]
+                }
+            )),
+            ui.input_selectize(
+                id = "input_crime_type",
+                label = "Select Crime Types:", 
+                choices = crimetypes, 
+                multiple = True,
+                options={
+                    "placeholder": "Displaying All",
+                    "plugins": ["clear_button"]
+                }),
             ui.p("TIMELINE"),
             ui.div(
                 "Select data to display: last week/last month/last year etc",
                 ui.br(), 
                 "Select display type: daily/monthly/weekly"),
             ui.input_checkbox_group(
+<<<<<<< feat/crime-donut-plot
                 "year",  
                 "Select Year:",
                 {
+=======
+                id = "input_year",  
+                label = "Select Year:",
+                choices = {
+>>>>>>> dev
                     "2023": "2023", 
                     "2024": "2024", 
                     "2025": "2025"
                 },
                 selected=["2023", "2024", "2025"], # default selects all the years
             ),
-            ui.p("CRIME TYPE"),
-            "Dropdown to select crime type or category (also can be done from interactive chart)",
             title="Dashboard Filters",
             bg="#ffffff",
             open="desktop", 
@@ -79,15 +99,11 @@ def server(input, output, session):
     
     @reactive.calc
     def filtered_data():
-        selected_year = input.year()
-        filename = f"crimedata_csv_AllNeighbourhoods_{selected_year}.csv"
-        path = appdir.parent / "data" / "raw" / filename
-        
-        try:
-            return pd.read_csv(path)
-        except FileNotFoundError:
-            return None
+        selected_years = list(input.input_year())
+        selected_crimes = list(input.input_crime_type())
+        selected_neighbourhoods = list(input.input_neighbourhood())
 
+<<<<<<< feat/crime-donut-plot
     @render_widget  
     def donut_plot():  
         donutplot = alt.Chart(
@@ -99,6 +115,16 @@ def server(input, output, session):
             color="TYPE:N",
         )
         return donutplot
+=======
+        df = base_df
+        if selected_years:
+            df = df[df['YEAR'].astype(str).isin(selected_years)]
+        if selected_crimes:
+            df = df[df['TYPE'].isin(selected_crimes)]
+        if selected_neighbourhoods:
+            df = df[df['NEIGHBOURHOOD'].isin(selected_neighbourhoods)]
+        return df
+>>>>>>> dev
     
     @render.text
     def yearly_crime_total():
@@ -111,7 +137,7 @@ def server(input, output, session):
     
     @render.text
     def selected_year_label():
-        return f"in {input.year()}"
+        return f"in {input.input_year()}"
 
     @render_widget
     def sparkline():
