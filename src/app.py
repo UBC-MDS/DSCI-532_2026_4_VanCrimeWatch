@@ -60,11 +60,8 @@ app_ui = ui.page_fluid(
             bg="#ffffff",
             open="desktop", 
         ),
-        ui.card(
-            "MAP: Interactive map of Vancouver with crime statistics visualised through circles. ",
-            "Changes according to selection. ",
-            "Optional display exact crime locations.",
-            output_widget("map"),
+        ui.card("Crime Map"),
+            output_widget("map")
         ),
         ui.layout_columns(
             ui.card(
