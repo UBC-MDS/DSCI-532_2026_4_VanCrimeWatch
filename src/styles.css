@@ -32,17 +32,13 @@ body {
 
 
 /*KPI Metric Classes*/
-.metric-year {
-    font-size: 0.40rem;
-    font-weight: 600;
+.metric-sub {
     color: #6c757d;
-    text-transform: uppercase;
     text-align: center;
 }
-.metric-trend {
-    font-size: 0.40rem;
-}
+
 .metric-value { 
-  font-size: 1rem; 
+  font-size: 1.75rem; 
   font-weight: 700; 
-  line-height: 1; }
+  line-height: 1; 
+}

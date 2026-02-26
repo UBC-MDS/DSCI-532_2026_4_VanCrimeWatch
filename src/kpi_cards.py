@@ -13,7 +13,7 @@ def metric_col(m, last=None):
             class_="metric-value text-center"
         ),
         ui.div(
-            ui.span(m["sub1"], class_="metric-year"),
+            ui.span(m["sub1"], class_="metric-sub"),
             ui.span(
                 m["sub2"],
                 class_=f"badge {m['badge']} {m['text']} metric-trend"
