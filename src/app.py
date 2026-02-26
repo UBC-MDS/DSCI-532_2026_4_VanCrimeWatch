@@ -19,6 +19,14 @@ base_df = pd.read_csv(path)
 neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
 crimetypes = base_df['TYPE'].unique().tolist()
 
+header = ui.div(
+    ui.div(
+        ui.h1("VanCrimeWatch", class_="mb-0 fs-4"),
+    ),
+    ui.tags.span(ui.input_dark_mode(), class_="bg-transparent border-0 text-dark"),
+    class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
+)
+
 app_ui = ui.page_fluid(
     ui.include_css(appdir.parent / "src" / "styles.css"),
     header,
@@ -62,7 +70,6 @@ app_ui = ui.page_fluid(
                 selected=["2023", "2024", "2025"], # default selects all the years
             ),
             title="Dashboard Filters",
-            bg="#ffffff",
             open="desktop", 
         ),
         # card for KPIs
@@ -73,7 +80,6 @@ app_ui = ui.page_fluid(
 
         ui.layout_columns(
             ui.card(
-                "CHARTS",
                 ui.layout_columns(
                     ui.card(
                         ui.p("BAR/DONUT CHART"),
@@ -88,6 +94,7 @@ app_ui = ui.page_fluid(
         ),
         fillable_mobile=True,
     ),
+    class_="container-fluid p-0"
 ) 
 
 def server(input, output, session):
