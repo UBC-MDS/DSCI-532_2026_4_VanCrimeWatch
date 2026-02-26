@@ -8,6 +8,8 @@ import plotly.express as px
 from pathlib import Path
 import pandas as pd
 
+from kpi_cards import *
+
 appdir = Path(__file__).parent
 
 filename = f"combined_crime_data_2023_2025.csv"
@@ -18,7 +20,8 @@ neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
 crimetypes = base_df['TYPE'].unique().tolist()
 
 app_ui = ui.page_fluid(
-    ui.include_css(appdir / "styles.css"),
+    ui.include_css(appdir.parent / "src" / "styles.css"),
+    header,
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
@@ -62,9 +65,12 @@ app_ui = ui.page_fluid(
             bg="#ffffff",
             open="desktop", 
         ),
-        ui.card("Crime Map",
-            output_widget("map")
-        ),
+        # card for KPIs
+        kpi_card_widget(),
+
+        #map widget
+        output_widget("map"),
+
         ui.layout_columns(
             ui.card(
                 "CHARTS",
@@ -142,18 +148,7 @@ def server(input, output, session):
             df = df[df['NEIGHBOURHOOD'].isin(selected_neighbourhoods)]
         return df
     
-    @render.text
-    def yearly_crime_total():
-        df = filtered_data()
-        if df is None:
-            return "N/A"
-        
-        total = df.shape[0]
-        return f"{total:,}"
-    
-    @render.text
-    def selected_year_label():
-        return f"in {input.input_year()}"
+    render_kpis(output, input, filtered_data)
 
     @render_widget
     def sparkline():
