@@ -1,38 +1,65 @@
-# VanCrimeWatch Dashboard Project
+# VanCrimeWatch Dashboard
 
-VanCrimeWatch is an interactive dashboard, providing a geospatial analysis of crime hotspots across different neighborhoods in Vancouver. Its goal is focused on assisting new business owners visualize which areas are more prone to specific types of crimes, enabling them to make adequate risk assessments when deciding where to open their businesses. They will be able to use this tool to make comparisons across neighborhoods, filter by crime types and also observe crime patterns from the last 3 years (2023-2025), to make more informed, business decisions. More generally, this dashboard acts as a tool serving anyone interested in understanding local crime patterns. Using Python and Shiny, the dashboard effectively communicates data-driven insights on complex crime patterns in the Vancouver area.
+> Interactive geospatial dashboard for visualizing crime patterns across Vancouver neighbourhoods.
 
-## Set up & Run Dashboard App
+[**Live App (Stable)**](https://019c91be-456e-2505-5fb4-c11d6cf5d889.share.connect.posit.cloud/) | [**Preview (Dev)**](https://019c9160-abda-f26a-30cf-a93666a35afa.share.connect.posit.cloud/)
 
-**1) First, clone the repository:**
+## Demo
+
+<!-- TODO: Replace placeholder with actual demo recording (15-30s GIF/MP4 showing a full interaction cycle) -->
+![Dashboard Demo](img/demo.gif)
+
+## Motivation
+
+Choosing a location for a new business requires understanding local safety conditions. VanCrimeWatch helps new business owners and community members visualize which areas in Vancouver are more prone to specific types of crimes, enabling informed risk assessments for business placement decisions.
+
+Using publicly available data from the Vancouver Police Department (2023--2025), the dashboard provides:
+
+- **Interactive Map** -- Geospatial view of crime hotspots across Vancouver neighbourhoods.
+- **Crime Timeline** -- Monthly, weekly, and hourly trend analysis with per-year comparisons.
+- **Crime Type Breakdown** -- Distribution of crime categories across selected filters.
+- **Neighbourhood & Crime Type Filters** -- Drill down into specific areas and offence types.
+- **Year Selection** -- Compare crime patterns across 2023, 2024, and 2025.
+
+## Installation & Local Development
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/UBC-MDS/DSCI_532_2026_4_VanCrimeWatch.git
 cd DSCI_532_2026_4_VanCrimeWatch
 ```
 
-**2) To ensure you can run the dashboard locally, activate the conda environment:**
+### 2. Create and activate the conda environment
 
 ```bash
 conda env create -f environment.yml
 conda activate vancrimewatch
 ```
 
-**3) Run the Dashboard app with the following:**
+### 3. Run the dashboard
 
 ```bash
 shiny run src/app.py --reload
 ```
 
-**4) Access the dashboard through the link displayed in your terminal:**
+### 4. Open in your browser
 
-```bash
+```
 http://127.0.0.1:8000
 ```
 
+## Contributing
+
+Interested in contributing? Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started, our code of conduct, and the process for submitting pull requests.
+
 ## Dataset
 
-The dataset used is pulled from publicly available data from [Vancouver Police Department](https://geodash.vpd.ca/opendata/).
+The dataset is sourced from publicly available data provided by the [Vancouver Police Department](https://geodash.vpd.ca/opendata/), covering crime incidents from 2023 to 2025.
+
+## License
+
+Licensed under the terms of the [MIT License](LICENSE).
 
 ## Contributors
 
