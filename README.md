@@ -4,10 +4,6 @@
 
 [**Live App (Stable)**](https://019c91be-456e-2505-5fb4-c11d6cf5d889.share.connect.posit.cloud/) | [**Preview (Dev)**](https://019c9160-abda-f26a-30cf-a93666a35afa.share.connect.posit.cloud/)
 
-## Demo
-
-<!-- TODO: Replace placeholder with actual demo recording (15-30s GIF/MP4 showing a full interaction cycle) -->
-![Dashboard Demo](img/demo.gif)
 
 ## Motivation
 
@@ -20,6 +16,12 @@ Using publicly available data from the Vancouver Police Department (2023--2025),
 - **Crime Type Breakdown** -- Distribution of crime categories across selected filters.
 - **Neighbourhood & Crime Type Filters** -- Drill down into specific areas and offence types.
 - **Year Selection** -- Compare crime patterns across 2023, 2024, and 2025.
+
+
+## Demo
+
+![Dashboard Demo](img/demo.gif)
+
 
 ## Installation & Local Development
 
