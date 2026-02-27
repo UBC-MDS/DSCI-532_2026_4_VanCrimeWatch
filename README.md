@@ -2,7 +2,7 @@
 
 > Interactive geospatial dashboard for visualizing crime patterns across Vancouver neighbourhoods.
 
-[**Live App (Stable)**](https://019c91be-456e-2505-5fb4-c11d6cf5d889.share.connect.posit.cloud/) | [**Preview (Dev)**](https://019c9160-abda-f26a-30cf-a93666a35afa.share.connect.posit.cloud/)
+[**Live App (Stable)**](https://jentsang-vancrimewatch.share.connect.posit.cloud/) | [**Preview (Dev)**](https://jentsang-vancrimewatch-dev.share.connect.posit.cloud/)
 
 
 ## Motivation
