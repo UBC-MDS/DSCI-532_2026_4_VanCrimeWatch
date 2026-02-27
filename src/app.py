@@ -8,7 +8,9 @@ import plotly.express as px
 from pathlib import Path
 import pandas as pd
 import altair as alt
+import sys
 
+sys.path.insert(0, Path(__file__).parent)
 from kpi_cards import *
 
 appdir = Path(__file__).parent
