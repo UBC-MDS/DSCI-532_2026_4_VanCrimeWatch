@@ -169,7 +169,7 @@ def server(input, output, session):
             grouped["label"] = grouped["MONTH"].map(month_map)
             grouped = grouped.sort_values(["year", "MONTH"])
             fig = px.line(grouped, x="label", y="count", color="year",
-                          labels={"label": "Month", "count": "Avg Incidents", "year": "Year"},
+                          labels={"label": "Month", "count": "Incidents", "year": "Year"},
                           category_orders={"label": month_order})
 
         elif agg == "weekly":
@@ -184,7 +184,7 @@ def server(input, output, session):
             grouped["weekday"] = pd.Categorical(grouped["weekday"], categories=day_order, ordered=True)
             grouped = grouped.sort_values(["year", "weekday"])
             fig = px.line(grouped, x="weekday", y="count", color="year",
-                          labels={"weekday": "Day", "count": "Avg Incidents", "year": "Year"},
+                          labels={"weekday": "Day", "count": "Incidents", "year": "Year"},
                           category_orders={"weekday": day_order})
 
         else:  # hourly
@@ -193,7 +193,7 @@ def server(input, output, session):
             grouped = hourly_df.groupby(["year", "HOUR"]).size().reset_index(name="count")
             grouped = grouped.sort_values(["year", "HOUR"])
             fig = px.line(grouped, x="HOUR", y="count", color="year",
-                          labels={"HOUR": "Hour", "count": "Avg Incidents", "year": "Year"})
+                          labels={"HOUR": "Hour", "count": "Incidents", "year": "Year"})
 
         fig.update_traces(
             line_width=2,
