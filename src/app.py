@@ -9,6 +9,8 @@ from pathlib import Path
 import pandas as pd
 import altair as alt
 
+from kpi_cards import *
+
 appdir = Path(__file__).parent
 
 filename = f"combined_crime_data_2023_2025.csv"
@@ -18,8 +20,17 @@ base_df = pd.read_csv(path)
 neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
 crimetypes = base_df['TYPE'].unique().tolist()
 
+header = ui.div(
+    ui.div(
+        ui.h1("VanCrimeWatch", class_="mb-0 fs-4"),
+    ),
+    ui.tags.span(ui.input_dark_mode(), class_="bg-transparent border-0 text-dark"),
+    class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
+)
+
 app_ui = ui.page_fluid(
-    ui.include_css(appdir / "styles.css"),
+    ui.include_css(appdir.parent / "src" / "styles.css"),
+    header,
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
@@ -60,17 +71,19 @@ app_ui = ui.page_fluid(
                 selected=["2023", "2024", "2025"], # default selects all the years
             ),
             title="Dashboard Filters",
-            bg="#ffffff",
             open="desktop", 
         ),
-        ui.card("Crime Map",
-            output_widget("map")
-        ),
+        # card for KPIs
+        kpi_card_widget(),
+
+        #map widget
+        output_widget("map"),
+
         ui.layout_columns(
             ui.card(
                 ui.layout_columns(
                     ui.card(
-                        ui.p("Types of Crime"),
+                        ui.card_header("Types of Crime"),
                         output_widget("donut_plot"),
                     ),
                     ui.card(
@@ -82,6 +95,7 @@ app_ui = ui.page_fluid(
         ),
         fillable_mobile=True,
     ),
+    class_="container-fluid p-0"
 ) 
 
 def server(input, output, session):
@@ -142,6 +156,8 @@ def server(input, output, session):
             df = df[df['NEIGHBOURHOOD'].isin(selected_neighbourhoods)]
         return df
     
+    render_kpis(output, input, filtered_data)
+    
     @render_altair  
     def donut_plot():  
         df = filtered_data().copy()
@@ -180,50 +196,6 @@ def server(input, output, session):
         )
 
         return donutplot
-
-    @render.text
-    def yearly_crime_total():
-        df = filtered_data()
-        if df is None:
-            return "N/A"
-        
-        total = df.shape[0]
-        return f"{total:,}"
-    
-    @render.text
-    def selected_year_label():
-        return f"in {input.input_year()}"
-
-    @render_widget
-    def sparkline():
-        df = filtered_data()
-        if df is None:
-            return px.line(title="Data not found")
-
-        df["month_year"] = pd.to_datetime(df[['YEAR', 'MONTH']].assign(DAY=1))
-
-        monthly_crimes = df.groupby("month_year").size().reset_index(name="crime_count")
-        monthly_crimes = monthly_crimes.sort_values("month_year")
-
-        fig = px.line(monthly_crimes, x="month_year", y="crime_count")
-
-        fig.update_traces(
-            line_color="#406EF1",
-            line_width=1,
-            fill="tozeroy",
-            fillcolor="rgba(64,110,241,0.2)",
-            hoverinfo="y",
-        )
-        fig.update_xaxes(visible=False, showgrid=False)
-        fig.update_yaxes(visible=False, showgrid=False)
-        fig.update_layout(
-            height=100,
-            hovermode="x",
-            margin=dict(t=0, r=0, l=0, b=0),
-            plot_bgcolor="rgba(0,0,0,0)",
-            paper_bgcolor="rgba(0,0,0,0)",
-        )
-        return fig
 
     @render_widget
     def timeline_chart():

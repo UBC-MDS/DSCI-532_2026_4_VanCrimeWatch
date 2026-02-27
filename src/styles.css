@@ -1,5 +1,5 @@
 body {
-  padding-top: 1rem;
+  margin: 0;
 }
 
 .bslib-value-box .plotly .modebar-container {
@@ -28,4 +28,17 @@ body {
   display: flex;
   flex: 1 1 auto;
   width: 100%;
+}
+
+
+/*KPI Metric Classes*/
+.metric-sub {
+    color: #6c757d;
+    text-align: center;
+}
+
+.metric-value { 
+  font-size: 1.75rem; 
+  font-weight: 700; 
+  line-height: 1; 
 }
