@@ -11,7 +11,7 @@ import altair as alt
 import sys
 
 sys.path.insert(0, Path(__file__).parent)
-from kpi_cards import *
+from src.kpi_cards import *
 
 appdir = Path(__file__).parent
 
