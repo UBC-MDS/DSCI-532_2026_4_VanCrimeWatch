@@ -91,20 +91,27 @@ def render_kpis(output, input, filtered_data):
                 9: "September", 10: "October", 11: "November", 12: "December"
             }
             counts = df.groupby("MONTH").size()
-            peak = counts.idxmax()
+            if counts.empty:
+                return metric_col({"sub1": "", "value": "N/A", "sub2": "No data", "badge": "bg-secondary", "text": ""})
+            peak = month_names[counts.idxmax()]
             val = int(counts.max())
-            peak = month_names[peak]
+
         elif agg == "weekly":
             df = df.copy()
             df["weekday"] = pd.to_datetime(df[["YEAR", "MONTH", "DAY"]].rename(
                 columns={"YEAR": "year", "MONTH": "month", "DAY": "day"}
             )).dt.day_name()
             counts = df.groupby("weekday").size()
+            if counts.empty:
+                return metric_col({"sub1": "", "value": "N/A", "sub2": "No data", "badge": "bg-secondary", "text": ""})
             peak = counts.idxmax()
             val = int(counts.max())
+
         else:
             hourly_df = df[~((df["HOUR"] == 0) & (df["MINUTE"] == 0))]
             counts = hourly_df.groupby("HOUR").size().reset_index(name="count")
+            if counts.empty:
+                return metric_col({"sub1": "", "value": "N/A", "sub2": "No time data available", "badge": "bg-secondary", "text": ""})
             peak_idx = counts["count"].idxmax()
             peak_hour = counts.loc[peak_idx, "HOUR"]
             peak = f"{peak_hour}:00-{peak_hour + 1}:00"
