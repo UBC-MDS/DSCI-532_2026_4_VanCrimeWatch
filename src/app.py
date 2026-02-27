@@ -72,6 +72,7 @@ app_ui = ui.page_fluid(
                 },
                 selected=["2023", "2024", "2025"], # default selects all the years
             ),
+            ui.input_action_button("reset_btn", "Reset Filters", class_="btn-success w-100"),
             title="Dashboard Filters",
             open="desktop", 
         ),
@@ -159,6 +160,14 @@ def server(input, output, session):
         return df
     
     render_kpis(output, input, filtered_data)
+
+    @reactive.effect
+    @reactive.event(input.reset_btn)
+    def reset_filters():
+        ui.update_selectize("input_neighbourhood", selected=[])
+        ui.update_selectize("input_crime_type", selected=[])
+        ui.update_checkbox_group("input_year", selected=["2023", "2024", "2025"])
+        ui.update_radio_buttons("time_display", selected="monthly")
     
     @render_altair  
     def donut_plot():  
