@@ -3,10 +3,11 @@ from ipywidgets import HTML
 import math
 from pyproj import Transformer
 from shiny import App, ui, reactive, render
-from shinywidgets import output_widget, render_widget  
+from shinywidgets import output_widget, render_widget, render_altair
 import plotly.express as px
 from pathlib import Path
 import pandas as pd
+import altair as alt
 
 from kpi_cards import *
 
@@ -82,8 +83,8 @@ app_ui = ui.page_fluid(
             ui.card(
                 ui.layout_columns(
                     ui.card(
-                        ui.p("BAR/DONUT CHART"),
-                        ui.p("Crime numbers displayed on interactive chart."),
+                        ui.card_header("Types of Crime"),
+                        output_widget("donut_plot"),
                     ),
                     ui.card(
                         ui.card_header("Crime Timeline"),
@@ -156,37 +157,45 @@ def server(input, output, session):
         return df
     
     render_kpis(output, input, filtered_data)
+    
+    @render_altair  
+    def donut_plot():  
+        df = filtered_data().copy()
 
-    @render_widget
-    def sparkline():
-        df = filtered_data()
-        if df is None:
-            return px.line(title="Data not found")
+        if df.empty:
+            return alt.Chart(pd.DataFrame()).mark_text().encode(text=alt.value("No data"))
 
-        df["month_year"] = pd.to_datetime(df[['YEAR', 'MONTH']].assign(DAY=1))
+        df["TYPE"] = df["TYPE"].replace({
+            "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
+            "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
+        })
 
-        monthly_crimes = df.groupby("month_year").size().reset_index(name="crime_count")
-        monthly_crimes = monthly_crimes.sort_values("month_year")
+        crime_type_counts = df.groupby("TYPE").size().reset_index(name="COUNT")
 
-        fig = px.line(monthly_crimes, x="month_year", y="crime_count")
-
-        fig.update_traces(
-            line_color="#406EF1",
-            line_width=1,
-            fill="tozeroy",
-            fillcolor="rgba(64,110,241,0.2)",
-            hoverinfo="y",
+        donutplot = alt.Chart(
+            crime_type_counts
+        ).mark_arc(
+            innerRadius=50
+        ).encode(
+            theta="COUNT:Q",
+            color=alt.Color(
+                "TYPE:N",
+                scale=alt.Scale(scheme="tableau20"),
+                legend=alt.Legend(
+                    title=None,
+                    orient="bottom",
+                    columns=3,
+                    labelLimit=0
+                )
+            ),
+            tooltip=["TYPE", "COUNT"]
+        ).properties(
+            width="container", 
+            height=300,
+            usermeta={'embedOptions': {'actions': False}},     
         )
-        fig.update_xaxes(visible=False, showgrid=False)
-        fig.update_yaxes(visible=False, showgrid=False)
-        fig.update_layout(
-            height=100,
-            hovermode="x",
-            margin=dict(t=0, r=0, l=0, b=0),
-            plot_bgcolor="rgba(0,0,0,0)",
-            paper_bgcolor="rgba(0,0,0,0)",
-        )
-        return fig
+
+        return donutplot
 
     @render_widget
     def timeline_chart():
