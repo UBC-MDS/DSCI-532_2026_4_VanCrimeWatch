@@ -3,10 +3,11 @@ from ipywidgets import HTML
 import math
 from pyproj import Transformer
 from shiny import App, ui, reactive, render
-from shinywidgets import output_widget, render_widget  
+from shinywidgets import output_widget, render_widget, render_altair
 import plotly.express as px
 from pathlib import Path
 import pandas as pd
+import altair as alt
 
 appdir = Path(__file__).parent
 
@@ -67,11 +68,10 @@ app_ui = ui.page_fluid(
         ),
         ui.layout_columns(
             ui.card(
-                "CHARTS",
                 ui.layout_columns(
                     ui.card(
-                        ui.p("BAR/DONUT CHART"),
-                        ui.p("Crime numbers displayed on interactive chart."),
+                        ui.p("Types of Crime"),
+                        output_widget("donut_plot"),
                     ),
                     ui.card(
                         ui.card_header("Crime Timeline"),
@@ -142,6 +142,45 @@ def server(input, output, session):
             df = df[df['NEIGHBOURHOOD'].isin(selected_neighbourhoods)]
         return df
     
+    @render_altair  
+    def donut_plot():  
+        df = filtered_data().copy()
+
+        if df.empty:
+            return alt.Chart(pd.DataFrame()).mark_text().encode(text=alt.value("No data"))
+
+        df["TYPE"] = df["TYPE"].replace({
+            "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
+            "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
+        })
+
+        crime_type_counts = df.groupby("TYPE").size().reset_index(name="COUNT")
+
+        donutplot = alt.Chart(
+            crime_type_counts
+        ).mark_arc(
+            innerRadius=50
+        ).encode(
+            theta="COUNT:Q",
+            color=alt.Color(
+                "TYPE:N",
+                scale=alt.Scale(scheme="tableau20"),
+                legend=alt.Legend(
+                    title=None,
+                    orient="bottom",
+                    columns=3,
+                    labelLimit=0
+                )
+            ),
+            tooltip=["TYPE", "COUNT"]
+        ).properties(
+            width="container", 
+            height=300,
+            usermeta={'embedOptions': {'actions': False}},     
+        )
+
+        return donutplot
+
     @render.text
     def yearly_crime_total():
         df = filtered_data()
