@@ -20,7 +20,7 @@ def metric_col(m, last=None):
             ),
             class_="d-flex justify-content-center align-items-center gap-2 mt-1",
         ),
-        class_=f"col-12 {" ".join(classes)}",
+        class_=f"col-12 {' '.join(classes)}",
     )
 
 def render_kpis(output, input, filtered_data):
