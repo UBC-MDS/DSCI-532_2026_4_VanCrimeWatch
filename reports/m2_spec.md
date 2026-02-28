@@ -87,3 +87,16 @@ Outputs Affected:
 
 > Note: (Not a responsive calc but affects the output display for one chart) The aggregation in `output_timeline` is based on `input_time_agg : str`. Eg. Selecting Weekly aggregation will aggregate ALL Mondays in 2023, ALL Tuesdays in 2023 etc. and give one value
 ---
+
+### 5. Complexity Enhancement: Reset Filters Button
+
+We implemented a Reset Filters button in the sidebar using `@reactive.effect` and `@reactive.event(input.reset_btn)`. Since our dashboard has 4 separate input components (neighbourhood selector, crime type selector, year checkboxes, and timeline aggregation), users who have applied multiple filters would otherwise need to manually deselect and reselect each widget individually to return to the default view.
+
+The reset button restores all inputs to their defaults in a single click:
+
+- Neighbourhood: all neighbourhoods (empty selection = displaying all)
+- Crime Type: all crime types (empty selection = displaying all)
+- Year: 2023, 2024, 2025 all selected
+- Aggregate By: Monthly
+
+The reset only triggers on button click and functions to programmatically restore each widget to its default value.
