@@ -2,6 +2,7 @@ from shiny import ui, render
 import pandas as pd
 
 def metric_col(m, last=None):
+    """Display total counts for all years passed"""
     classes = []
     if last is not None:
         classes.append("col-md-4")
@@ -28,6 +29,7 @@ def render_kpis(output, input, filtered_data):
     @output
     @render.ui
     def metrics_row():
+        """Output widget for total count"""
         df = filtered_data()
         yearly = df.groupby('YEAR').size().sort_index()
         result = []
@@ -64,6 +66,7 @@ def render_kpis(output, input, filtered_data):
     @output
     @render.ui
     def safest_block():
+        """Output widget for safest neighbourhood"""
         df = filtered_data()
         block_counts = df['NEIGHBOURHOOD'].value_counts()
         safest = block_counts.idxmin()
@@ -81,6 +84,7 @@ def render_kpis(output, input, filtered_data):
     @output
     @render.ui
     def peak_crime_period():
+        """Output widget for peak crime time from timeline chart"""
         df = filtered_data()
         agg = input.time_display()
         val = ""
@@ -127,6 +131,7 @@ def render_kpis(output, input, filtered_data):
         })
     
 def render_card(title, block, cols):
+    """Metric display helper"""
     return ui.div(
                 ui.div(
                     ui.div(title, class_="card-header fw-semibold"),
@@ -140,6 +145,7 @@ def render_card(title, block, cols):
                 )
 
 def kpi_card_widget():
+    """Main widget to collect and display all KPIs"""
     card_details = [
         ("Least Crime", ui.output_ui("safest_block"), 3),
         ("Peak Crime Time", ui.output_ui("peak_crime_period"), 3),
