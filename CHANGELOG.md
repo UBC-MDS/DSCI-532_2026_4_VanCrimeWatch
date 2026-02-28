@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed time filter input ([from M1 sketch](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/blob/dev/reports/m1_proposal.md#app-sketch--description)) to year selection input [#39](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/39)
 - Updated readme instructions, included deployment links and demo of dashboard [#49](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/49), [#58](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/58)
+- Updated component inventory to reflect new KPIs,reset button and new input/output ID names [9580267](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/59/changes/9580267b2268fb1a3917085c0bcc22b7ee999b30)
 
 ### Fixed
 
