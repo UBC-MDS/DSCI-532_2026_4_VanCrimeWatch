@@ -13,3 +13,6 @@ dependencies:
   - shinywidgets
   - plotly
   - anywidget
+  - altair
+  - ipywidgets
+  - pyproj
