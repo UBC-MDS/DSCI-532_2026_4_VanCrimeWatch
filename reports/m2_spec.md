@@ -6,7 +6,7 @@
 | --- | ------------------------------- | -------------- | ----------------------------- |
 | 1   | As a business owner, I want to filter crimes by neighbourhood so that I can identify which areas of the city are statistically safest for a new storefront. | ✅ Implemented  |                               |
 | 2   | As a baker hoping to open a new bakery in the city, I want to filter crimes by type (e.g., Commercial B&E) so that I can specifically avoid areas where my business equipment and inventory would be at high risk. | ✅ Implemented     |  |
-| 3   | As a visual learner, I want to view crime data on an interactive map so that I can understand the spatial relationship between potential cafe locations and recent criminal activity. | ✅ Implemented  |                        |
+| 3   | As a visual learner, I want to view crime data on an interactive map so that I can understand the spatial relationship between potential bakery locations and recent criminal activity. | ✅ Implemented  |                        |
 | 4   | As a baker operating my business from mornings to evenings, I want to view crime trends by time of day, day of week, and month so that I can identify the safest hours, days, and seasons to operate my storefront. | ✅ Implemented | 
 
 ### 2. Component Inventory
@@ -15,14 +15,18 @@
 | ------------- | ------------- | ----------------------- | ---------------------------- | ---------- |
 | `input_neighbourhood`    | Input         | `ui.input_selectize(multiple=True)` | —                                                       |#1 |
 | `input_crime_type`       | Input         | `ui.input_selectize(multiple=True)` | —                                                       |#2|
-| `input_year`             | Input         | `ui.input_checkbox_group()`         | —                                                       |#3|
-| `input_time_agg`         | Input         | `ui.input_radio_buttons()`          | —                                                       |#3|
-| `filtered_data`          | Reactive calc | `@reactive.calc`                    | `input_neighbourhood`, `input_crime_type`, `input_year` | #1,#2,#3|
-| `output_map`             | Output        | `@render.ui` (leaflet)              | `filtered_data`                                         |#1, #3|
-| `output_donut`           | Output        | `@render.plot`                      | `filtered_data`                                         |#2|
-| `output_timeline`        | Output        | `@render.plot`                      | `filtered_data`, `input_time_agg`                       |#2|
-| `output_kpi_most_common` | Output        | `@render.text`                      | `filtered_data`                                         |#1,#2|
-| `output_kpi_safest_area` | Output        | `@render.text`                      | `filtered_data`                                         |#3|
+| `input_year`             | Input         | `ui.input_checkbox_group()`         | —                                                       |#3,#4|
+| `time_display`         | Input         | `ui.input_radio_buttons()`          | —                                                       |#4|
+| `reset_btn`         | Input            | `ui.input_action_button()`          | —                                                       | #1,#2,#3,#4 |
+| `filtered_data`          | Reactive calc | `@reactive.calc`                    | `input_neighbourhood`, `input_crime_type`, `input_year` | #1,#2,#3,#4|
+| `reset_filters`     | Reactive effect  | `@reactive.effect`+`@reactive.event`| `reset_btn`                                             | #1,#2,#3,#4 |
+| `map`             | Output        | `@render_widget` (leaflet)              | `filtered_data`                                         |#1, #3|
+| `donut_plot`           | Output        | `@render_altair`                      | `filtered_data`                                         |#2|
+| `timeline_chart`        | Output        | `@render_widget`                      | `filtered_data`, `time_display`                       |#3,#4|
+| `safest_block`    | Output        | `@render.ui`                      | `filtered_data`                                         |#1,#2,#3|
+| `peak_crime_period` | Output        | `@render.ui`                      | `filtered_data`, `time_display`                                        |#4|
+| `metrics_row`       | Output        |  `@render.ui`                     | `filtered_data`                                         |#1, #2, #3, #4|
+
 
 ### 3. Reactivity Diagram
 
