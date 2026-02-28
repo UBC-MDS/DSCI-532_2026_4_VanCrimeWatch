@@ -12,19 +12,19 @@ body {
   width: 100%;
 }
 
-.shiny-ipywidget-output > * {
+.shiny-ipywidget-output>* {
   display: flex;
   flex: 1 1 auto;
   width: 100%;
 }
 
-.shiny-ipywidget-output > * > * {
+.shiny-ipywidget-output>*>* {
   display: flex;
   flex: 1 1 auto;
   width: 100%;
 }
 
-.shiny-ipywidget-output > * > * > * {
+.shiny-ipywidget-output>*>*>* {
   display: flex;
   flex: 1 1 auto;
   width: 100%;
@@ -33,14 +33,14 @@ body {
 
 /*KPI Metric Classes*/
 .metric-sub {
-    color: #6c757d;
-    text-align: center;
+  color: #6c757d;
+  text-align: center;
 }
 
-.metric-value { 
-  font-size: 1.75rem; 
-  font-weight: 700; 
-  line-height: 1; 
+.metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 /* Plotly dark mode for timeline chart: make axis labels, titles, and legend readable */
@@ -50,4 +50,8 @@ body {
 [data-bs-theme="dark"] .plotly .g-ytitle text,
 [data-bs-theme="dark"] .plotly .legendtext {
   fill: #dee2e6 !important;
+}
+
+[data-bs-theme="dark"] .plotly .hoverlayer text {
+  fill: #333 !important;
 }
