@@ -11,7 +11,7 @@ import altair as alt
 import sys
 
 sys.path.insert(0, Path(__file__).parent)
-from kpi_cards import *
+from src.kpi_cards import *
 
 appdir = Path(__file__).parent
 
@@ -26,7 +26,7 @@ header = ui.div(
     ui.div(
         ui.h1("VanCrimeWatch", class_="mb-0 fs-4"),
     ),
-    ui.tags.span(ui.input_dark_mode(), class_="bg-transparent border-0 text-dark"),
+    ui.tags.span(ui.input_dark_mode(id="mode", mode="light"), class_="bg-transparent border-0 text-dark"),
     class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
 )
 
@@ -169,7 +169,7 @@ def server(input, output, session):
         ui.update_checkbox_group("input_year", selected=["2023", "2024", "2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
     
-    @render_altair  
+    @render_altair
     def donut_plot():  
         df = filtered_data().copy()
 
