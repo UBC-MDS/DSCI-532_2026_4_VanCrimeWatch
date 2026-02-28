@@ -5,7 +5,7 @@
 | #   | Job Story                       | Status         | Notes                         |
 | --- | ------------------------------- | -------------- | ----------------------------- |
 | 1   | As a business owner, I want to filter crimes by neighbourhood so that I can identify which areas of the city are statistically safest for a new storefront. | ✅ Implemented  |                               |
-| 2   | As a baker working early hours, I want to filter crimes by type (e.g., Commercial B&E) so that I can specifically avoid areas where my business equipment and inventory would be at high risk. | ✅ Implemented     |  |
+| 2   | As a baker hoping to open a new bakery in the city, I want to filter crimes by type (e.g., Commercial B&E) so that I can specifically avoid areas where my business equipment and inventory would be at high risk. | ✅ Implemented     |  |
 | 3   | As a visual learner, I want to view crime data on an interactive map so that I can understand the spatial relationship between potential cafe locations and recent criminal activity. | ✅ Implemented  |                        |
 | 4   | As a baker operating my business from mornings to evenings, I want to view crime trends by time of day, day of week, and month so that I can identify the safest hours, days, and seasons to operate my storefront. | ✅ Implemented | 
 
