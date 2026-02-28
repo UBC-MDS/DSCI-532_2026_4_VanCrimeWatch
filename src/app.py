@@ -11,7 +11,7 @@ import altair as alt
 import sys
 
 sys.path.insert(0, Path(__file__).parent)
-from src.kpi_cards import *
+from kpi_cards import *
 
 appdir = Path(__file__).parent
 
@@ -183,6 +183,11 @@ def server(input, output, session):
 
         crime_type_counts = df.groupby("TYPE").size().reset_index(name="COUNT")
 
+        # Detect dark mode
+        is_dark = input.mode() == "dark"
+        bg_color = "#00000000"
+        text_color = "#ffffff" if is_dark else "#000000"
+
         donutplot = alt.Chart(
             crime_type_counts
         ).mark_arc(
@@ -196,14 +201,20 @@ def server(input, output, session):
                     title=None,
                     orient="bottom",
                     columns=3,
-                    labelLimit=0
+                    labelLimit=0,
+                    labelColor=text_color,
                 )
             ),
             tooltip=["TYPE", "COUNT"]
         ).properties(
             width="container", 
             height=300,
-            usermeta={'embedOptions': {'actions': False}},     
+            usermeta={'embedOptions': {'actions': False}},
+        ).configure(
+            background=bg_color,
+            axis=alt.AxisConfig(labelColor=text_color, titleColor=text_color),
+            legend=alt.LegendConfig(labelColor=text_color, titleColor=text_color),
+            title=alt.TitleConfig(color=text_color),
         )
 
         return donutplot
