@@ -26,7 +26,7 @@ header = ui.div(
     ui.div(
         ui.h1("VanCrimeWatch", class_="mb-0 fs-4"),
     ),
-    ui.tags.span(ui.input_dark_mode(), class_="bg-transparent border-0 text-dark"),
+    ui.tags.span(ui.input_dark_mode(id="mode", mode="light"), class_="bg-transparent border-0 text-dark"),
     class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
 )
 
@@ -169,7 +169,7 @@ def server(input, output, session):
         ui.update_checkbox_group("input_year", selected=["2023", "2024", "2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
     
-    @render_altair  
+    @render_altair
     def donut_plot():  
         df = filtered_data().copy()
 
@@ -182,6 +182,11 @@ def server(input, output, session):
         })
 
         crime_type_counts = df.groupby("TYPE").size().reset_index(name="COUNT")
+
+        # Detect dark mode
+        is_dark = input.mode() == "dark"
+        bg_color = "#00000000"
+        text_color = "#ffffff" if is_dark else "#000000"
 
         donutplot = alt.Chart(
             crime_type_counts
@@ -196,14 +201,20 @@ def server(input, output, session):
                     title=None,
                     orient="bottom",
                     columns=3,
-                    labelLimit=0
+                    labelLimit=0,
+                    labelColor=text_color,
                 )
             ),
             tooltip=["TYPE", "COUNT"]
         ).properties(
             width="container", 
             height=300,
-            usermeta={'embedOptions': {'actions': False}},     
+            usermeta={'embedOptions': {'actions': False}},
+        ).configure(
+            background=bg_color,
+            axis=alt.AxisConfig(labelColor=text_color, titleColor=text_color),
+            legend=alt.LegendConfig(labelColor=text_color, titleColor=text_color),
+            title=alt.TitleConfig(color=text_color),
         )
 
         return donutplot
