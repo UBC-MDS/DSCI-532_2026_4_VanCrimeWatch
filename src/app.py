@@ -9,6 +9,10 @@ from pathlib import Path
 import pandas as pd
 import altair as alt
 import sys
+from dotenv import load_dotenv
+from querychat import QueryChat
+
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 sys.path.insert(0, Path(__file__).parent)
 from src.kpi_cards import *
@@ -22,6 +26,25 @@ base_df = pd.read_csv(path)
 neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
 crimetypes = base_df['TYPE'].unique().tolist()
 
+
+qc = QueryChat(
+    base_df,
+    "vancouver_crime",
+    client="anthropic/claude-haiku-4-5",
+#     greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
+#     extra_instructions="""
+# This dataset contains Vancouver police crime records from 2023-2025.
+# Key columns: TYPE (crime category), YEAR, MONTH, DAY, HOUR, MINUTE,
+# HUNDRED_BLOCK (street address), NEIGHBOURHOOD, X (longitude), Y (latitude).
+# Crime types include: Break and Enter Commercial, Break and Enter Residential/Other,
+# Homicide, Mischief, Offence Against a Person, Other Theft, Theft from Vehicle,
+# Theft of Bicycle, Theft of Vehicle, Vehicle Collision or Pedestrian Struck.
+# Keep SQL queries simple and efficient. When filtering, return all columns so
+# downstream visualizations (map, donut chart, timeline) work correctly.
+# """,
+)
+
+# ---------- Shared header ----------
 header = ui.div(
     ui.div(
         ui.h1("VanCrimeWatch", class_="mb-0 fs-4"),
@@ -30,9 +53,9 @@ header = ui.div(
     class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
 )
 
-app_ui = ui.page_fluid(
-    ui.include_css(appdir.parent / "src" / "styles.css"),
-    header,
+# ---------- Tab 1: Dashboard (existing) ----------
+dashboard_tab = ui.nav_panel(
+    "Dashboard",
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
@@ -98,10 +121,118 @@ app_ui = ui.page_fluid(
         ),
         fillable_mobile=True,
     ),
-    class_="container-fluid p-0"
-) 
+)
+
+# ---------- Tab 2: AI Explorer (new) ----------
+# ----------------------------------------------------------
+# TODO : Wire up the following outputs using
+# qc_vals.df() in the server function.
+#
+# qc_vals = qc.server()  <-- already called in server()
+#
+# Access the filtered dataframe with:
+#   df = qc_vals.df()          # returns narwhals DataFrame
+#   df_pd = df.to_native()     # convert to pandas
+#
+# Access the generated SQL with:
+#   sql = qc_vals.sql()
+#
+# Reset filters with:
+#   qc_vals.sql.set("")
+#   qc_vals.title.set(None)
+# ----------------------------------------------------------
+ai_tab = ui.nav_panel(
+    "AI Explorer",
+    ui.layout_sidebar(
+        qc.sidebar(width=400),
+
+        # Top row: Map (left) + Filtered Dataframe (right)
+        ui.layout_columns(
+            # TODO: Replace placeholder with interactive map using qc_vals.df()
+            ui.card(
+                ui.card_header("Map"),
+                ui.div(
+                    ui.p("Map placeholder", class_="text-muted text-center mt-5"),
+                    ui.p("Use qc_vals.df() to render an ipyleaflet map here.", class_="text-muted text-center small"),
+                    style="height: 100%;",
+                ),
+                height="380px",
+            ),
+            # TODO: Replace placeholder with @render.data_frame using qc_vals.df()
+            ui.card(
+                ui.card_header("Filtered Data"),
+                ui.div(
+                    ui.p("Dataframe placeholder", class_="text-muted text-center mt-5"),
+                    ui.p("Use qc_vals.df() to render a data table here.", class_="text-muted text-center small"),
+                    style="height: 100%;",
+                ),
+                height="380px",
+            ),
+        ),
+
+        # Bottom row: Donut chart (left) + Timeline chart (right)
+        ui.layout_columns(
+            # TODO: Replace placeholder with donut chart using qc_vals.df().to_native()
+            ui.card(
+                ui.card_header("Types of Crime"),
+                ui.div(
+                    ui.p("Donut chart placeholder", class_="text-muted text-center mt-5"),
+                    ui.p("Use qc_vals.df().to_native() to render a donut chart here.", class_="text-muted text-center small"),
+                    style="height: 100%;",
+                ),
+                height="380px",
+            ),
+            # TODO: Replace placeholder with timeline chart using qc_vals.df().to_native()
+            ui.card(
+                ui.card_header("Crime Timeline"),
+                ui.div(
+                    ui.p("Timeline chart placeholder", class_="text-muted text-center mt-5"),
+                    ui.p("Use qc_vals.df().to_native() to render a timeline chart here.", class_="text-muted text-center small"),
+                    style="height: 100%;",
+                ),
+                height="380px",
+            ),
+        ),
+
+        # Download button
+        # TODO: Wire up @render.download using qc_vals.df().to_native().to_csv()
+        ui.card(
+            ui.download_button("download_filtered", "Download Filtered CSV", class_="btn-primary w-100"),
+        ),
+
+        fillable_mobile=True,
+    ),
+)
+
+# ---------- Main app UI ----------
+app_ui = ui.page_fluid(
+    ui.include_css(appdir.parent / "src" / "styles.css"),
+    header,
+    ui.navset_tab(
+        dashboard_tab,
+        ai_tab,
+        id="navbar",
+    ),
+    class_="container-fluid p-0",
+)
 
 def server(input, output, session):
+    # ---------- QueryChat server ----------
+    qc_vals = qc.server()
+
+    # ---------- AI Explorer tab ----------
+    # TODO: Add server-side render functions here for:
+    #   - @render.data_frame for "ai_data_table" using qc_vals.df()
+    #   - @render_widget for "ai_map" using qc_vals.df()
+    #   - @render_widget / @render_altair for "ai_donut_plot"
+    #   - @render_widget for "ai_timeline_chart"
+    #   - @render.download for "download_filtered"
+    #
+    # Helper to get pandas df from querychat:
+    #   df = qc_vals.df()
+    #   df = df.to_native() if hasattr(df, "to_native") else df
+
+    
     @render_widget  
     def map():
         df = filtered_data().copy()

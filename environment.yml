@@ -16,3 +16,8 @@ dependencies:
   - altair
   - ipywidgets
   - pyproj
+  - pip:
+    - querychat
+    - chatlas
+    - python-dotenv
+    - anthropic
