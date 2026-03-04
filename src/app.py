@@ -44,7 +44,6 @@ qc = QueryChat(
 # """,
 )
 
-# ---------- Shared header ----------
 header = ui.div(
     ui.div(
         ui.h1("VanCrimeWatch", class_="mb-0 fs-4"),
@@ -53,7 +52,6 @@ header = ui.div(
     class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
 )
 
-# ---------- Tab 1: Dashboard (existing) ----------
 dashboard_tab = ui.nav_panel(
     "Dashboard",
     ui.layout_sidebar(
@@ -123,8 +121,6 @@ dashboard_tab = ui.nav_panel(
     ),
 )
 
-# ---------- Tab 2: AI Explorer (new) ----------
-# ----------------------------------------------------------
 # TODO : Wire up the following outputs using
 # qc_vals.df() in the server function.
 #
@@ -140,7 +136,6 @@ dashboard_tab = ui.nav_panel(
 # Reset filters with:
 #   qc_vals.sql.set("")
 #   qc_vals.title.set(None)
-# ----------------------------------------------------------
 ai_tab = ui.nav_panel(
     "AI Explorer",
     ui.layout_sidebar(
@@ -204,7 +199,6 @@ ai_tab = ui.nav_panel(
     ),
 )
 
-# ---------- Main app UI ----------
 app_ui = ui.page_fluid(
     ui.include_css(appdir.parent / "src" / "styles.css"),
     header,
@@ -217,10 +211,8 @@ app_ui = ui.page_fluid(
 )
 
 def server(input, output, session):
-    # ---------- QueryChat server ----------
     qc_vals = qc.server()
 
-    # ---------- AI Explorer tab ----------
     # TODO: Add server-side render functions here for:
     #   - @render.data_frame for "ai_data_table" using qc_vals.df()
     #   - @render_widget for "ai_map" using qc_vals.df()
