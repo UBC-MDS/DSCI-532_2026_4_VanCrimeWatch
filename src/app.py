@@ -33,27 +33,36 @@ qc = QueryChat(
     client="anthropic/claude-haiku-4-5",
 #    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
     extra_instructions="""
-This dataset contains Vancouver police crime records from 2023-2025.
-Key columns: TYPE (crime category), YEAR, MONTH, DAY, HOUR, MINUTE,
-HUNDRED_BLOCK (street address), NEIGHBOURHOOD, X (longitude), Y (latitude).
-Crime types include: Break and Enter Commercial, Break and Enter Residential/Other,
-Homicide, Mischief, Offence Against a Person, Other Theft, Theft from Vehicle,
-Theft of Bicycle, Theft of Vehicle, Vehicle Collision or Pedestrian Struck.
+        This dataset contains Vancouver police crime records from 2023-2025.
+        Key columns: TYPE (crime category), YEAR, MONTH, DAY, HOUR, MINUTE,
+        HUNDRED_BLOCK (street address), NEIGHBOURHOOD, X (longitude), Y (latitude).
+        Crime types include: Break and Enter Commercial, Break and Enter Residential/Other,
+        Homicide, Mischief, Offence Against a Person, Other Theft, Theft from Vehicle,
+        Theft of Bicycle, Theft of Vehicle, Vehicle Collision or Pedestrian Struck.
 
-Valid NEIGHBOURHOOD values are EXACTLY (use these exact strings in SQL queries):
-'Arbutus Ridge', 'Central Business District', 'Dunbar-Southlands', 'Fairview',
-'Grandview-Woodland', 'Hastings-Sunrise', 'Kensington-Cedar Cottage', 'Kerrisdale',
-'Killarney', 'Kitsilano', 'Marpole', 'Mount Pleasant', 'Musqueam', 'Oakridge',
-'Renfrew-Collingwood', 'Riley Park', 'Shaughnessy', 'South Cambie', 'Stanley Park',
-'Strathcona', 'Sunset', 'Victoria-Fraserview', 'West End', 'West Point Grey'
+        When a user uses informal terms for crime types, map them as follows:
+        - 'vandalism' or 'graffiti' or "property damage" = 'Mischief'
+        - 'car theft' or 'stolen car' = 'Theft of Vehicle'
+        - 'mugging', 'assault', or 'robbery' = 'Offence Against a Person'
+        - 'bike theft' or 'stolen bike' = 'Theft of Bicycle'
+        - 'break in' or 'burglary' at a house/home/apartment = 'Break and Enter Residential/Other'
+        - 'break in' or 'burglary' at a store/shop/office/business = 'Break and Enter Commercial'
+        - if unclear whether residential or commercial, query both types
 
-When a user refers to a neighbourhood using an informal name, map it as follows:
-- 'Downtown' or 'City Centre' → 'Central Business District'
-- 'East Van' or 'East Vancouver' → 'Hastings-Sunrise' or 'Grandview-Woodland'
-- 'Kits' → 'Kitsilano'
-- 'Riley' → 'Riley Park'
-- 'Strathy' → 'Strathcona'
-""",
+        Valid NEIGHBOURHOOD values are EXACTLY (use these exact strings in SQL queries):
+        'Arbutus Ridge', 'Central Business District', 'Dunbar-Southlands', 'Fairview',
+        'Grandview-Woodland', 'Hastings-Sunrise', 'Kensington-Cedar Cottage', 'Kerrisdale',
+        'Killarney', 'Kitsilano', 'Marpole', 'Mount Pleasant', 'Musqueam', 'Oakridge',
+        'Renfrew-Collingwood', 'Riley Park', 'Shaughnessy', 'South Cambie', 'Stanley Park',
+        'Strathcona', 'Sunset', 'Victoria-Fraserview', 'West End', 'West Point Grey'
+
+        When a user refers to a neighbourhood using an informal name, map it as follows:
+        - 'Downtown' or 'City Centre' = 'Central Business District'
+        - 'East Van' or 'East Vancouver' = 'Hastings-Sunrise' or 'Grandview-Woodland'
+        - 'Kits' = 'Kitsilano'
+        - 'Riley' = 'Riley Park'
+        - 'Strathy' = 'Strathcona'
+        """,
 )
 
 header = ui.div(
