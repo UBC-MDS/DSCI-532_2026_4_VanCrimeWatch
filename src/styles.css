@@ -55,3 +55,20 @@ body {
 [data-bs-theme="dark"] .plotly .hoverlayer text {
   fill: #333 !important;
 }
+
+/* AI Explorer only: constrain chat sidebar + main to viewport */
+.tab-pane:last-child .bslib-sidebar-layout>.sidebar {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.tab-pane:last-child .bslib-sidebar-layout>.main {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+/* fixed height within sidebar */
+.chat-container {
+  height: calc(100vh - 180px) !important;
+  max-height: calc(100vh - 180px) !important;
+}
