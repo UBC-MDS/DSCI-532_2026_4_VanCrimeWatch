@@ -31,17 +31,38 @@ qc = QueryChat(
     base_df,
     "vancouver_crime",
     client="anthropic/claude-haiku-4-5",
-#     greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
-#     extra_instructions="""
-# This dataset contains Vancouver police crime records from 2023-2025.
-# Key columns: TYPE (crime category), YEAR, MONTH, DAY, HOUR, MINUTE,
-# HUNDRED_BLOCK (street address), NEIGHBOURHOOD, X (longitude), Y (latitude).
-# Crime types include: Break and Enter Commercial, Break and Enter Residential/Other,
-# Homicide, Mischief, Offence Against a Person, Other Theft, Theft from Vehicle,
-# Theft of Bicycle, Theft of Vehicle, Vehicle Collision or Pedestrian Struck.
-# Keep SQL queries simple and efficient. When filtering, return all columns so
-# downstream visualizations (map, donut chart, timeline) work correctly.
-# """,
+#    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
+    extra_instructions="""
+        This dataset contains Vancouver police crime records from 2023-2025.
+        Key columns: TYPE (crime category), YEAR, MONTH, DAY, HOUR, MINUTE,
+        HUNDRED_BLOCK (street address), NEIGHBOURHOOD, X (longitude), Y (latitude).
+        Crime types include: Break and Enter Commercial, Break and Enter Residential/Other,
+        Homicide, Mischief, Offence Against a Person, Other Theft, Theft from Vehicle,
+        Theft of Bicycle, Theft of Vehicle, Vehicle Collision or Pedestrian Struck.
+
+        When a user uses informal terms for crime types, map them as follows:
+        - 'vandalism' or 'graffiti' or "property damage" = 'Mischief'
+        - 'car theft' or 'stolen car' = 'Theft of Vehicle'
+        - 'mugging', 'assault', or 'robbery' = 'Offence Against a Person'
+        - 'bike theft' or 'stolen bike' = 'Theft of Bicycle'
+        - 'break in' or 'burglary' at a house/home/apartment = 'Break and Enter Residential/Other'
+        - 'break in' or 'burglary' at a store/shop/office/business = 'Break and Enter Commercial'
+        - if unclear whether residential or commercial, query both types
+
+        Valid NEIGHBOURHOOD values are EXACTLY (use these exact strings in SQL queries):
+        'Arbutus Ridge', 'Central Business District', 'Dunbar-Southlands', 'Fairview',
+        'Grandview-Woodland', 'Hastings-Sunrise', 'Kensington-Cedar Cottage', 'Kerrisdale',
+        'Killarney', 'Kitsilano', 'Marpole', 'Mount Pleasant', 'Musqueam', 'Oakridge',
+        'Renfrew-Collingwood', 'Riley Park', 'Shaughnessy', 'South Cambie', 'Stanley Park',
+        'Strathcona', 'Sunset', 'Victoria-Fraserview', 'West End', 'West Point Grey'
+
+        When a user refers to a neighbourhood using an informal name, map it as follows:
+        - 'Downtown' or 'City Centre' = 'Central Business District'
+        - 'East Van' or 'East Vancouver' = 'Hastings-Sunrise' or 'Grandview-Woodland'
+        - 'Kits' = 'Kitsilano'
+        - 'Riley' = 'Riley Park'
+        - 'Strathy' = 'Strathcona'
+        """,
 )
 
 header = ui.div(
@@ -153,14 +174,9 @@ ai_tab = ui.nav_panel(
                 ),
                 height="380px",
             ),
-            # TODO: Replace placeholder with @render.data_frame using qc_vals.df()
             ui.card(
                 ui.card_header("Filtered Data"),
-                ui.div(
-                    ui.p("Dataframe placeholder", class_="text-muted text-center mt-5"),
-                    ui.p("Use qc_vals.df() to render a data table here.", class_="text-muted text-center small"),
-                    style="height: 100%;",
-                ),
+                ui.output_data_frame("ai_data_table"),
                 height="380px",
             ),
         ),
@@ -190,9 +206,9 @@ ai_tab = ui.nav_panel(
         ),
 
         # Download button
-        # TODO: Wire up @render.download using qc_vals.df().to_native().to_csv()
-        ui.card(
-            ui.download_button("download_filtered", "Download Filtered CSV", class_="btn-primary w-100"),
+        ui.div(
+            ui.download_button("download_filtered", "Download Filtered CSV", class_="btn-success w-100"),
+            style="position: sticky; bottom: 0; padding: 10px; z-index: 100;"
         ),
 
         fillable_mobile=True,
@@ -223,6 +239,18 @@ def server(input, output, session):
     # Helper to get pandas df from querychat:
     #   df = qc_vals.df()
     #   df = df.to_native() if hasattr(df, "to_native") else df
+
+    @render.data_frame
+    def ai_data_table():
+        df = qc_vals.df()
+        df = df.to_native() if hasattr(df, "to_native") else df
+        return df
+
+    @render.download(filename="filtered_crime_data.csv")
+    def download_filtered():
+        df = qc_vals.df()
+        df = df.to_native() if hasattr(df, "to_native") else df
+        yield df.to_csv(index=False)
 
     
     @render_widget  
