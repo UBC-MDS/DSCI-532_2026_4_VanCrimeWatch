@@ -3,7 +3,7 @@ from ipywidgets import HTML
 import math
 from pyproj import Transformer
 from shiny import App, ui, reactive, render
-from shinywidgets import output_widget, render_widget, render_altair
+from shinywidgets import output_widget, render_widget
 import plotly.express as px
 from pathlib import Path
 import pandas as pd
@@ -15,7 +15,7 @@ from querychat import QueryChat
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 sys.path.insert(0, Path(__file__).parent)
-from src.kpi_cards import *
+from kpi_cards import *
 
 appdir = Path(__file__).parent
 
@@ -121,7 +121,7 @@ dashboard_tab = ui.nav_panel(
         # card for KPIs
         kpi_card_widget(),
 
-        #map widget
+        # map widget
         output_widget("map"),
 
         ui.layout_columns(
@@ -186,11 +186,7 @@ ai_tab = ui.nav_panel(
             # TODO: Replace placeholder with donut chart using qc_vals.df().to_native()
             ui.card(
                 ui.card_header("Types of Crime"),
-                ui.div(
-                    ui.p("Donut chart placeholder", class_="text-muted text-center mt-5"),
-                    ui.p("Use qc_vals.df().to_native() to render a donut chart here.", class_="text-muted text-center small"),
-                    style="height: 100%;",
-                ),
+                output_widget("ai_donut_plot"),
                 height="380px",
             ),
             # TODO: Replace placeholder with timeline chart using qc_vals.df().to_native()
@@ -252,6 +248,56 @@ def server(input, output, session):
         df = df.to_native() if hasattr(df, "to_native") else df
         yield df.to_csv(index=False)
 
+    @render_widget
+    def ai_donut_plot():  
+        df = qc_vals.df()
+        df = df.to_native() if hasattr(df, "to_native") else df
+
+        if df.empty:
+            return alt.Chart(pd.DataFrame()).mark_text().encode(text=alt.value("No data"))
+
+        df["TYPE"] = df["TYPE"].replace({
+            "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
+            "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
+        })
+
+        crime_type_counts = df.groupby("TYPE").size().reset_index(name="COUNT")
+
+        # Detect dark mode
+        is_dark = input.mode() == "dark"
+        bg_color = "#00000000"
+        text_color = "#ffffff" if is_dark else "#000000"
+
+        donutplot = alt.Chart(
+            crime_type_counts
+        ).mark_arc(
+            innerRadius=50
+        ).encode(
+            theta="COUNT:Q",
+            color=alt.Color(
+                "TYPE:N",
+                scale=alt.Scale(scheme="tableau20"),
+                legend=alt.Legend(
+                    title=None,
+                    orient="bottom",
+                    columns=3,
+                    labelLimit=0,
+                    labelColor=text_color,
+                )
+            ),
+            tooltip=["TYPE", "COUNT"]
+        ).properties(
+            width="container", 
+            height=300,
+            usermeta={'embedOptions': {'actions': False}},
+        ).configure(
+            background=bg_color,
+            axis=alt.AxisConfig(labelColor=text_color, titleColor=text_color),
+            legend=alt.LegendConfig(labelColor=text_color, titleColor=text_color),
+            title=alt.TitleConfig(color=text_color),
+        )
+
+        return donutplot
     
     @render_widget  
     def map():
@@ -320,7 +366,7 @@ def server(input, output, session):
         ui.update_checkbox_group("input_year", selected=["2023", "2024", "2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
     
-    @render_altair
+    @render_widget
     def donut_plot():  
         df = filtered_data().copy()
 
