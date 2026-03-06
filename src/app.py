@@ -15,7 +15,7 @@ from querychat import QueryChat
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 sys.path.insert(0, Path(__file__).parent)
-from kpi_cards import *
+from src.kpi_cards import *
 
 appdir = Path(__file__).parent
 
@@ -185,8 +185,9 @@ ai_tab = ui.nav_panel(
         ),
 
         # Download button
-        ui.card(
-            ui.download_button("download_filtered", "Download Filtered CSV", class_="btn-primary w-100"),
+        ui.div(
+            ui.download_button("download_filtered", "Download Filtered CSV", class_="btn-success w-100"),
+            style="position: sticky; bottom: 0; padding: 10px; z-index: 100;"
         ),
 
         fillable_mobile=True,
