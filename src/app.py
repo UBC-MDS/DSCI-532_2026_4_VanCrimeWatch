@@ -15,7 +15,7 @@ from querychat import QueryChat
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 sys.path.insert(0, Path(__file__).parent)
-from src.kpi_cards import *
+from kpi_cards import *
 
 appdir = Path(__file__).parent
 
@@ -153,14 +153,9 @@ ai_tab = ui.nav_panel(
                 ),
                 height="380px",
             ),
-            # TODO: Replace placeholder with @render.data_frame using qc_vals.df()
             ui.card(
                 ui.card_header("Filtered Data"),
-                ui.div(
-                    ui.p("Dataframe placeholder", class_="text-muted text-center mt-5"),
-                    ui.p("Use qc_vals.df() to render a data table here.", class_="text-muted text-center small"),
-                    style="height: 100%;",
-                ),
+                ui.output_data_frame("ai_data_table"),
                 height="380px",
             ),
         ),
@@ -190,7 +185,6 @@ ai_tab = ui.nav_panel(
         ),
 
         # Download button
-        # TODO: Wire up @render.download using qc_vals.df().to_native().to_csv()
         ui.card(
             ui.download_button("download_filtered", "Download Filtered CSV", class_="btn-primary w-100"),
         ),
@@ -223,6 +217,18 @@ def server(input, output, session):
     # Helper to get pandas df from querychat:
     #   df = qc_vals.df()
     #   df = df.to_native() if hasattr(df, "to_native") else df
+
+    @render.data_frame
+    def ai_data_table():
+        df = qc_vals.df()
+        df = df.to_native() if hasattr(df, "to_native") else df
+        return df
+
+    @render.download(filename="filtered_crime_data.csv")
+    def download_filtered():
+        df = qc_vals.df()
+        df = df.to_native() if hasattr(df, "to_native") else df
+        yield df.to_csv(index=False)
 
     
     @render_widget  
