@@ -161,7 +161,12 @@ ai_tab = ui.nav_panel(
                         ui.span(
                             ui.download_button(
                                 "download_filtered",
-                                "Download Filtered CSV",
+                                ui.span(
+                                    ui.HTML(
+                                        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download-icon lucide-download"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>'
+                                    ),
+                                    " Download Filtered CSV",
+                                ),
                                 class_="btn-success btn-sm",
                             ),
                             style="margin-left:auto; display:inline-flex; align-items:center;",
@@ -179,13 +184,13 @@ ai_tab = ui.nav_panel(
             ui.card(
                 get_card_header("Types of Crime", icon="Hover"),
                 ui.output_ui("ai_donut_plot"),
-                style ="min-height: 400px;"
+                style="min-height: 400px;",
             ),
             # AI Crime Timeline
             ui.card(
                 get_card_header("Crime Timeline", icon="Hover"),
                 ui.output_ui("ai_timeline_chart"),
-                style ="min-height: 400px;"
+                style="min-height: 400px;",
             ),
         ),
         # Download button
@@ -236,8 +241,12 @@ def server(input, output, session):
     def ai_donut_plot():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
-        fig= _make_donut_plot(df, input, compact=True)
-        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
+        fig = _make_donut_plot(df, input, compact=True)
+        return ui.HTML(
+            fig.to_html(
+                full_html=False, include_plotlyjs="cdn", config={"responsive": True}
+            )
+        )
 
     @render_widget
     def donut_plot():
