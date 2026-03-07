@@ -282,9 +282,9 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.reset_btn)
     def reset_filters():
-        ui.update_selectize("input_neighbourhood", selected=[])
-        ui.update_selectize("input_crime_type", selected=[])
-        ui.update_checkbox_group("input_year", selected=["2023", "2024", "2025"])
+        ui.update_selectize("input_neighbourhood", selected=["Central Business District", "West End"])
+        ui.update_selectize("input_crime_type", selected=business_crime_types)
+        ui.update_checkbox_group("input_year", selected=["2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
 
     @render.ui
