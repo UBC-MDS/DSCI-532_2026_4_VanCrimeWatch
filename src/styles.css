@@ -62,6 +62,23 @@ body {
   fill: #333 !important;
 }
 
+[data-bs-theme="dark"] .shiny-data-grid thead th {
+    background-color: #1e1e2e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .shiny-data-grid tbody tr.selected,
+[data-bs-theme="dark"] .shiny-data-grid tbody tr:focus,
+[data-bs-theme="dark"] .shiny-data-grid tbody tr[aria-selected="true"] {
+    background-color: #3a3a5c !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .shiny-data-grid tbody tr:hover {
+    background-color: #2a2a3e !important;
+    color: #ffffff !important;
+}
+
 .tab-pane:last-child .bslib-sidebar-layout>.sidebar {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
