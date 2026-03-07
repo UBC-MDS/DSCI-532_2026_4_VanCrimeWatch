@@ -26,15 +26,15 @@ filename = f"combined_crime_data_2023_2025.csv"
 path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
-neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
-crimetypes = base_df['TYPE'].unique().tolist()
+neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
+crimetypes = base_df["TYPE"].unique().tolist()
 
 
 qc = QueryChat(
     base_df,
     "vancouver_crime",
     client="anthropic/claude-haiku-4-5",
-#    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
+    #    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
     extra_instructions="""
         This dataset contains Vancouver police crime records from 2023-2025.
         Key columns: TYPE (crime category), YEAR, MONTH, DAY, HOUR, MINUTE,
@@ -73,52 +73,51 @@ dashboard_tab = ui.nav_panel(
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
-                ui.input_selectize(  
-                id = "input_neighbourhood",  
-                label = "Select Neighbourhoods:",  
-                choices = neighbourhoods,  
-                multiple=True,
-                options={
-                    "placeholder": "Displaying All",
-                    "plugins": ["clear_button"]
-                }
-            )),
+                ui.input_selectize(
+                    id="input_neighbourhood",
+                    label="Select Neighbourhoods:",
+                    choices=neighbourhoods,
+                    multiple=True,
+                    options={
+                        "placeholder": "Displaying All",
+                        "plugins": ["clear_button"],
+                    },
+                )
+            ),
             ui.input_selectize(
-                id = "input_crime_type",
-                label = "Select Crime Types:", 
-                choices = crimetypes, 
-                multiple = True,
-                options={
-                    "placeholder": "Displaying All",
-                    "plugins": ["clear_button"]
-                }),
+                id="input_crime_type",
+                label="Select Crime Types:",
+                choices=crimetypes,
+                multiple=True,
+                options={"placeholder": "Displaying All", "plugins": ["clear_button"]},
+            ),
             ui.p("TIMELINE"),
             ui.input_radio_buttons(
                 "time_display",
                 "Aggregate By:",
-                {"monthly": "Monthly", "weekly": "Weekly (Day of Week)", "hourly": "Hourly"},
+                {
+                    "monthly": "Monthly",
+                    "weekly": "Weekly (Day of Week)",
+                    "hourly": "Hourly",
+                },
                 selected="monthly",
             ),
             ui.input_checkbox_group(
-                id = "input_year",  
-                label = "Select Year:",
-                choices = {
-                    "2023": "2023", 
-                    "2024": "2024", 
-                    "2025": "2025"
-                },
-                selected=["2023", "2024", "2025"], # default selects all the years
+                id="input_year",
+                label="Select Year:",
+                choices={"2023": "2023", "2024": "2024", "2025": "2025"},
+                selected=["2023", "2024", "2025"],  # default selects all the years
             ),
-            ui.input_action_button("reset_btn", "Reset Filters", class_="btn-success w-100"),
+            ui.input_action_button(
+                "reset_btn", "Reset Filters", class_="btn-success w-100"
+            ),
             title="Dashboard Filters",
-            open="desktop", 
+            open="desktop",
         ),
         # card for KPIs
         kpi_card_widget(),
-
         # map widget
         output_widget("map"),
-
         ui.layout_columns(
             ui.card(
                 ui.card_header("Types of Crime"),
@@ -152,7 +151,6 @@ ai_tab = ui.nav_panel(
     "AI Explorer",
     ui.layout_sidebar(
         qc.sidebar(width=400),
-
         # Top row: Map (left) + Filtered Dataframe (right)
         ui.layout_columns(
             # AI Map
@@ -167,7 +165,6 @@ ai_tab = ui.nav_panel(
                 height="380px",
             ),
         ),
-
         # Bottom row: Donut chart (left) + Timeline chart (right)
         ui.layout_columns(
             # AI Types of Crime Donut Chart
@@ -183,13 +180,13 @@ ai_tab = ui.nav_panel(
                 height="380px",
             ),
         ),
-
         # Download button
         ui.div(
-            ui.download_button("download_filtered", "Download Filtered CSV", class_="btn-success w-100"),
-            style="position: sticky; bottom: 0; padding: 10px; z-index: 100;"
+            ui.download_button(
+                "download_filtered", "Download Filtered CSV", class_="btn-success w-100"
+            ),
+            style="position: sticky; bottom: 0; padding: 10px; z-index: 100;",
         ),
-
         fillable_mobile=True,
     ),
 )
@@ -206,14 +203,13 @@ app_ui = ui.page_navbar(
         class_="d-flex align-items-center",
     ),
     header=ui.include_css(appdir.parent / "src" / "styles.css"),
-    
     navbar_options=ui.navbar_options(
         theme="dark",
         class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
-    ),    
-
+    ),
     id="navbar",
 )
+
 
 def server(input, output, session):
     qc_vals = qc.server()
@@ -260,7 +256,7 @@ def server(input, output, session):
     @render_widget
     def map():
         return _make_map(filtered_data().copy())
-    
+
     @reactive.calc
     def filtered_data():
         selected_years = list(input.input_year())
@@ -269,13 +265,13 @@ def server(input, output, session):
 
         df = base_df
         if selected_years:
-            df = df[df['YEAR'].astype(str).isin(selected_years)]
+            df = df[df["YEAR"].astype(str).isin(selected_years)]
         if selected_crimes:
-            df = df[df['TYPE'].isin(selected_crimes)]
+            df = df[df["TYPE"].isin(selected_crimes)]
         if selected_neighbourhoods:
-            df = df[df['NEIGHBOURHOOD'].isin(selected_neighbourhoods)]
+            df = df[df["NEIGHBOURHOOD"].isin(selected_neighbourhoods)]
         return df
-    
+
     render_kpis(output, input, filtered_data)
 
     @reactive.effect
@@ -285,15 +281,21 @@ def server(input, output, session):
         ui.update_selectize("input_crime_type", selected=[])
         ui.update_checkbox_group("input_year", selected=["2023", "2024", "2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
-    
+
     @render.ui
     def ai_timeline_chart():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
         fig = _make_timeline_chart(df, input, compact=True)
-        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
-    
+        return ui.HTML(
+            fig.to_html(
+                full_html=False, include_plotlyjs="cdn", config={"responsive": True}
+            )
+        )
+
     @render_widget
     def timeline_chart():
         return _make_timeline_chart(filtered_data(), input)
+
+
 app = App(app_ui, server)
