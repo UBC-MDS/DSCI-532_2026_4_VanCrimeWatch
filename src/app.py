@@ -32,17 +32,19 @@ neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
 crimetypes = base_df["TYPE"].unique().tolist()
 
 business_crime_types = [
-    'Break and Enter Commercial',
-    'Theft from Vehicle',
-    'Other Theft',
-    'Mischief',
-    'Theft of Vehicle'
+    "Break and Enter Commercial",
+    "Theft from Vehicle",
+    "Other Theft",
+    "Mischief",
+    "Theft of Vehicle",
 ]
 
-base_df["TYPE"] = base_df["TYPE"].replace({
+base_df["TYPE"] = base_df["TYPE"].replace(
+    {
         "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
         "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
-    })
+    }
+)
 
 
 qc = QueryChat(
@@ -63,7 +65,10 @@ dashboard_tab = ui.nav_panel(
                     label="Select Neighbourhoods:",
                     choices=neighbourhoods,
                     multiple=True,
-                    selected=["Central Business District","West End"],  # default selects popular neighbourhoods
+                    selected=[
+                        "Central Business District",
+                        "West End",
+                    ],  # default selects popular neighbourhoods
                     options={
                         "placeholder": "Displaying All",
                         "plugins": ["clear_button"],
