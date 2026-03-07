@@ -159,7 +159,7 @@ ai_tab = ui.nav_panel(
         ui.layout_columns(
             # AI Types of Crime Donut Chart
             ui.card(
-                get_card_header("Crime Timeline", icon="Hover"),
+                get_card_header("Types of Crime", icon="Hover"),
                 output_widget("ai_donut_plot"),
                 height="380px",
             ),
