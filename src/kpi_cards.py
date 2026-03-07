@@ -1,11 +1,10 @@
 from shiny import ui, render
 import pandas as pd
 
-def metric_col(m, last=None):
-    """Display total counts for all years passed"""
+def metric_col(m, last=None, col_size=4):
     classes = []
     if last is not None:
-        classes.append("col-md-4")
+        classes.append(f"col-md-{col_size}")
         if not last:
             classes.append("mb-3 mb-md-0")
     return ui.div(
@@ -18,7 +17,7 @@ def metric_col(m, last=None):
             ui.span(
                 m["sub2"],
                 class_=f"badge {m['badge']} {m['text']} metric-trend"
-            ),
+            ) if m["sub2"] else ui.span(),
             class_="d-flex justify-content-center align-items-center gap-2 mt-1",
         ),
         class_=f"col-12 {' '.join(classes)}",
@@ -56,12 +55,15 @@ def render_kpis(output, input, filtered_data):
             })
             prev_count = count
 
+        n = len(result)
+        col_size = max(12 // n, 3) if n > 0 else 12
+
         cols = []
         for i, m in enumerate(result):
-            last = i == len(result) - 1
-            cols.append(metric_col(m, last=last))
+            last = i == n - 1
+            cols.append(metric_col(m, last=last, col_size=col_size))
 
-        return ui.div(*cols, class_="row text-center metrics-row")
+        return ui.div(*cols, class_="row justify-content-center text-center metrics-row")
 
     @output
     @render.ui
