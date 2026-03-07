@@ -122,14 +122,53 @@ dashboard_tab = ui.nav_panel(
         # card for KPIs
         kpi_card_widget(),
         # map widget
-        output_widget("map"),
+        ui.div(
+            ui.div(
+                ui.span(
+                    ui.HTML(
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg>'
+                    ),
+                    "Click for more",
+                    style="display:inline-flex; align-items:center;",
+                    class_="badge-right",
+                ),
+                style="display:flex; justify-content:flex-end; margin-bottom:4px;",
+            ),
+            output_widget("map"),
+        ),
         ui.layout_columns(
             ui.card(
-                ui.card_header("Types of Crime"),
+                ui.card_header(
+                    ui.div(
+                        "Types of Crime",
+                        ui.span(
+                            ui.HTML(
+                                '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M22 14a8 8 0 0 1-8 8"/><path d="M18 11v-1a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1"/><path d="M10 9.5V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v10"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>'
+                            ),
+                            "Hover for more",
+                            style="margin-left:auto; display:inline-flex; align-items:center;",
+                            class_="badge-right",
+                        ),
+                        style="display:flex; align-items:center; width:100%;",
+                    )
+                ),
                 output_widget("donut_plot"),
             ),
             ui.card(
-                ui.card_header("Crime Timeline"),
+                ui.card_header(
+                    ui.div(
+                        "Crime Timeline",
+                        ui.span(
+                            ui.HTML(
+                                '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M22 14a8 8 0 0 1-8 8"/><path d="M18 11v-1a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1"/><path d="M10 9.5V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v10"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>'
+                            ),
+                            "Hover for more",
+                            style="margin-left:auto; display:inline-flex; align-items:center;",
+                            class_="badge-right",
+                        ),
+                        style="display:flex; align-items:center; width:100%;",
+                    ),
+                ),
                 output_widget("timeline_chart"),
             ),
         ),
@@ -219,13 +258,6 @@ app_ui = ui.page_navbar(
 def server(input, output, session):
     qc_vals = qc.server()
 
-    # TODO: Add server-side render functions here for:
-    #   - @render.data_frame for "ai_data_table" using qc_vals.df()
-    #   - @render_widget for "ai_map" using qc_vals.df()
-    #   - @render_widget / @render_altair for "ai_donut_plot"
-    #   - @render_widget for "ai_timeline_chart"
-    #   - @render.download for "download_filtered"
-    #
     # Helper to get pandas df from querychat:
     #   df = qc_vals.df()
     #   df = df.to_native() if hasattr(df, "to_native") else df
@@ -246,7 +278,7 @@ def server(input, output, session):
     def ai_donut_plot():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
-        return _make_donut_plot(df, input)
+        return _make_donut_plot(df, input, compact=True)
 
     @render_widget
     def donut_plot():
