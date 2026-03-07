@@ -6,7 +6,10 @@ import sys
 from dotenv import load_dotenv
 from querychat import QueryChat
 
-load_dotenv(Path(__file__).parent.parent / ".env")
+# root directory path
+appdir = Path(__file__).parent
+
+load_dotenv(appdir / ".env")
 
 # sys.path.insert(0, Path(__file__).parent)
 from src.kpi_cards import *
@@ -14,10 +17,8 @@ from src.donut_chart import _make_donut_plot
 from src.map_render import _make_map
 from src.timeline_chart import _make_timeline_chart
 
-appdir = Path(__file__).parent
-
 filename = f"combined_crime_data_2023_2025.csv"
-path = appdir.parent / "data" / "processed" / filename
+path = appdir / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
 neighbourhoods = base_df['NEIGHBOURHOOD'].unique().tolist()
@@ -203,7 +204,7 @@ app_ui = ui.page_navbar(
         ui.h1("VanCrimeWatch", class_="mb-0 fs-4 text-white"),
         class_="d-flex align-items-center",
     ),
-    header=ui.include_css(appdir.parent / "src" / "styles.css"),
+    header=ui.include_css(appdir / "src" / "styles.css"),
     
     navbar_options=ui.navbar_options(
         theme="dark",
