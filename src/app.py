@@ -173,14 +173,14 @@ ai_tab = ui.nav_panel(
             # AI Types of Crime Donut Chart
             ui.card(
                 get_card_header("Types of Crime", icon="Hover"),
-                output_widget("ai_donut_plot"),
-                height="380px",
+                ui.output_ui("ai_donut_plot"),
+                style ="min-height: 400px;"
             ),
             # AI Crime Timeline
             ui.card(
                 get_card_header("Crime Timeline", icon="Hover"),
                 ui.output_ui("ai_timeline_chart"),
-                height="380px",
+                style ="min-height: 400px;"
             ),
         ),
         # Download button
@@ -227,11 +227,12 @@ def server(input, output, session):
         df = df.to_native() if hasattr(df, "to_native") else df
         yield df.to_csv(index=False)
 
-    @render_widget
+    @render.ui
     def ai_donut_plot():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
-        return _make_donut_plot(df, input, compact=True)
+        fig= _make_donut_plot(df, input, compact=True)
+        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
 
     @render_widget
     def donut_plot():
