@@ -42,7 +42,7 @@ conda activate vancrimewatch
 ### 3. Run the dashboard
 
 ```bash
-shiny run app.py --reload
+shiny run src/app.py --reload
 ```
 
 ### 4. Open in your browser

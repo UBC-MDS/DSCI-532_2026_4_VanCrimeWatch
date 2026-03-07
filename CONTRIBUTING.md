@@ -108,7 +108,7 @@ to submit a pull request.
 cd DSCI_532_2026_4_VanCrimeWatch
 conda activate vancrimewatch
 
-shiny run app.py --reload
+shiny run src/app.py --reload
 ```
 
 ## Attribution and Code of Conduct
