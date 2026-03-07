@@ -29,6 +29,11 @@ base_df = pd.read_csv(path)
 neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
 crimetypes = base_df["TYPE"].unique().tolist()
 
+base_df["TYPE"] = base_df["TYPE"].replace({
+        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
+        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
+    })
+
 
 qc = QueryChat(
     base_df,
