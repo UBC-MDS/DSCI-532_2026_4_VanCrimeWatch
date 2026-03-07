@@ -4,9 +4,10 @@ body {
 }
 
 .navbar {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
+
 .bslib-value-box .plotly .modebar-container {
   display: none;
 }
@@ -76,4 +77,26 @@ body {
 .chat-container {
   height: calc(100vh - 180px) !important;
   max-height: calc(100vh - 180px) !important;
+}
+
+.row-flex {
+    display: flex;
+    align-items: center;
+}
+
+.badge-right {
+    margin-left: auto;
+    background: #e8f0fe;
+    color: #1a73e8;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid #c5d8fb;
+}
+
+[data-bs-theme="dark"] .badge-right {
+    background: #1f3a5f;
+    color: #8ab4f8;
+    border: 1px solid #3b5a8a;
 }
