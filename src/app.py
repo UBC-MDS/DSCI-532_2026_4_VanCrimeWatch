@@ -115,16 +115,12 @@ dashboard_tab = ui.nav_panel(
 
         ui.layout_columns(
             ui.card(
-                ui.layout_columns(
-                    ui.card(
-                        ui.card_header("Types of Crime"),
-                        output_widget("donut_plot"),
-                    ),
-                    ui.card(
-                        ui.card_header("Crime Timeline"),
-                        output_widget("timeline_chart"),
-                    ),
-                )
+                ui.card_header("Types of Crime"),
+                output_widget("donut_plot"),
+            ),
+            ui.card(
+                ui.card_header("Crime Timeline"),
+                output_widget("timeline_chart"),
             ),
         ),
         fillable_mobile=True,
@@ -177,7 +173,7 @@ ai_tab = ui.nav_panel(
             # AI Crime Timeline
             ui.card(
                 ui.card_header("Crime Timeline"),
-                output_widget("ai_timeline_chart"),
+                ui.output_ui("ai_timeline_chart"),
                 height="380px",
             ),
         ),
@@ -284,11 +280,12 @@ def server(input, output, session):
         ui.update_checkbox_group("input_year", selected=["2023", "2024", "2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
     
-    @render_widget
+    @render.ui
     def ai_timeline_chart():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
-        return _make_timeline_chart(df, input)
+        fig = _make_timeline_chart(df, input, compact=True)
+        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
     
     @render_widget
     def timeline_chart():
