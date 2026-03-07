@@ -9,10 +9,16 @@ from querychat import QueryChat
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 # sys.path.insert(0, Path(__file__).parent)
-from src.kpi_cards import *
-from src.donut_chart import _make_donut_plot
-from src.map_render import _make_map
-from src.timeline_chart import _make_timeline_chart
+if __package__ and __package__ != "__main__":
+    from src.kpi_cards import *
+    from src.donut_chart import _make_donut_plot
+    from src.map_render import _make_map
+    from src.timeline_chart import _make_timeline_chart
+else:
+    from kpi_cards import *
+    from donut_chart import _make_donut_plot
+    from map_render import _make_map
+    from timeline_chart import _make_timeline_chart
 
 appdir = Path(__file__).parent
 
