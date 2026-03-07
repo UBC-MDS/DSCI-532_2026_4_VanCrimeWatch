@@ -29,6 +29,14 @@ base_df = pd.read_csv(path)
 neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
 crimetypes = base_df["TYPE"].unique().tolist()
 
+business_crime_types = [
+    'Break and Enter Commercial',
+    'Theft from Vehicle',
+    'Other Theft',
+    'Mischief',
+    'Theft of Vehicle'
+]
+
 base_df["TYPE"] = base_df["TYPE"].replace({
         "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
         "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
@@ -83,6 +91,7 @@ dashboard_tab = ui.nav_panel(
                     label="Select Neighbourhoods:",
                     choices=neighbourhoods,
                     multiple=True,
+                    selected=["Central Business District","West End"],  # default selects popular neighbourhoods
                     options={
                         "placeholder": "Displaying All",
                         "plugins": ["clear_button"],
@@ -94,6 +103,7 @@ dashboard_tab = ui.nav_panel(
                 label="Select Crime Types:",
                 choices=crimetypes,
                 multiple=True,
+                selected=business_crime_types,  # default selects common business crime types
                 options={"placeholder": "Displaying All", "plugins": ["clear_button"]},
             ),
             ui.p("TIMELINE"),
@@ -111,7 +121,7 @@ dashboard_tab = ui.nav_panel(
                 id="input_year",
                 label="Select Year:",
                 choices={"2023": "2023", "2024": "2024", "2025": "2025"},
-                selected=["2023", "2024", "2025"],  # default selects all the years
+                selected=["2025"],  # default selects latest year
             ),
             ui.input_action_button(
                 "reset_btn", "Reset Filters", class_="btn-success w-100"
