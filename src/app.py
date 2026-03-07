@@ -150,7 +150,20 @@ ai_tab = ui.nav_panel(
                 height="380px",
             ),
             ui.card(
-                ui.card_header("Filtered Data"),
+                ui.card_header(
+                    ui.div(
+                        "Filtered Data",
+                        ui.span(
+                            ui.download_button(
+                                "download_filtered",
+                                "Download Filtered CSV",
+                                class_="btn-success btn-sm",
+                            ),
+                            style="margin-left:auto; display:inline-flex; align-items:center;",
+                        ),
+                        style="display:flex; align-items:center; width:100%;",
+                    )
+                ),
                 ui.output_data_frame("ai_data_table"),
                 height="380px",
             ),
@@ -171,12 +184,6 @@ ai_tab = ui.nav_panel(
             ),
         ),
         # Download button
-        ui.div(
-            ui.download_button(
-                "download_filtered", "Download Filtered CSV", class_="btn-success w-100"
-            ),
-            style="position: sticky; bottom: 0; padding: 10px; z-index: 100;",
-        ),
         fillable_mobile=True,
     ),
 )
