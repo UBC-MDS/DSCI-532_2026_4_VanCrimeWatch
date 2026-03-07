@@ -14,11 +14,13 @@ if __package__ and __package__ != "__main__":
     from src.donut_chart import _make_donut_plot
     from src.map_render import _make_map
     from src.timeline_chart import _make_timeline_chart
+    from src.helpers import *
 else:
     from kpi_cards import *
     from donut_chart import _make_donut_plot
     from map_render import _make_map
     from timeline_chart import _make_timeline_chart
+    from helpers import *
 
 appdir = Path(__file__).parent
 
@@ -48,37 +50,7 @@ qc = QueryChat(
     "vancouver_crime",
     client="anthropic/claude-haiku-4-5",
     #    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
-    extra_instructions="""
-        This dataset contains Vancouver police crime records from 2023-2025.
-        Key columns: TYPE (crime category), YEAR, MONTH, DAY, HOUR, MINUTE,
-        HUNDRED_BLOCK (street address), NEIGHBOURHOOD, X (longitude), Y (latitude).
-        Crime types include: Break and Enter Commercial, Break and Enter Residential/Other,
-        Homicide, Mischief, Offence Against a Person, Other Theft, Theft from Vehicle,
-        Theft of Bicycle, Theft of Vehicle, Vehicle Collision or Pedestrian Struck.
-
-        When a user uses informal terms for crime types, map them as follows:
-        - 'vandalism' or 'graffiti' or "property damage" = 'Mischief'
-        - 'car theft' or 'stolen car' = 'Theft of Vehicle'
-        - 'mugging', 'assault', or 'robbery' = 'Offence Against a Person'
-        - 'bike theft' or 'stolen bike' = 'Theft of Bicycle'
-        - 'break in' or 'burglary' at a house/home/apartment = 'Break and Enter Residential/Other'
-        - 'break in' or 'burglary' at a store/shop/office/business = 'Break and Enter Commercial'
-        - if unclear whether residential or commercial, query both types
-
-        Valid NEIGHBOURHOOD values are EXACTLY (use these exact strings in SQL queries):
-        'Arbutus Ridge', 'Central Business District', 'Dunbar-Southlands', 'Fairview',
-        'Grandview-Woodland', 'Hastings-Sunrise', 'Kensington-Cedar Cottage', 'Kerrisdale',
-        'Killarney', 'Kitsilano', 'Marpole', 'Mount Pleasant', 'Musqueam', 'Oakridge',
-        'Renfrew-Collingwood', 'Riley Park', 'Shaughnessy', 'South Cambie', 'Stanley Park',
-        'Strathcona', 'Sunset', 'Victoria-Fraserview', 'West End', 'West Point Grey'
-
-        When a user refers to a neighbourhood using an informal name, map it as follows:
-        - 'Downtown' or 'City Centre' = 'Central Business District'
-        - 'East Van' or 'East Vancouver' = 'Hastings-Sunrise' or 'Grandview-Woodland'
-        - 'Kits' = 'Kitsilano'
-        - 'Riley' = 'Riley Park'
-        - 'Strathy' = 'Strathcona'
-        """,
+    extra_instructions=extra_instructions,
 )
 
 dashboard_tab = ui.nav_panel(
@@ -133,52 +105,16 @@ dashboard_tab = ui.nav_panel(
         kpi_card_widget(),
         # map widget
         ui.div(
-            ui.div(
-                ui.span(
-                    ui.HTML(
-                        '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg>'
-                    ),
-                    "Click for more",
-                    style="display:inline-flex; align-items:center;",
-                    class_="badge-right",
-                ),
-                style="display:flex; justify-content:flex-end; margin-bottom:4px;",
-            ),
+            get_card_header("", icon="Click"),
             output_widget("map"),
         ),
         ui.layout_columns(
             ui.card(
-                ui.card_header(
-                    ui.div(
-                        "Types of Crime",
-                        ui.span(
-                            ui.HTML(
-                                '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M22 14a8 8 0 0 1-8 8"/><path d="M18 11v-1a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1"/><path d="M10 9.5V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v10"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>'
-                            ),
-                            "Hover for more",
-                            style="margin-left:auto; display:inline-flex; align-items:center;",
-                            class_="badge-right",
-                        ),
-                        style="display:flex; align-items:center; width:100%;",
-                    )
-                ),
+                get_card_header("Types of Crime", icon="Hover"),
                 output_widget("donut_plot"),
             ),
             ui.card(
-                ui.card_header(
-                    ui.div(
-                        "Crime Timeline",
-                        ui.span(
-                            ui.HTML(
-                                '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M22 14a8 8 0 0 1-8 8"/><path d="M18 11v-1a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1"/><path d="M10 9.5V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v10"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>'
-                            ),
-                            "Hover for more",
-                            style="margin-left:auto; display:inline-flex; align-items:center;",
-                            class_="badge-right",
-                        ),
-                        style="display:flex; align-items:center; width:100%;",
-                    ),
-                ),
+                get_card_header("Crime Timeline", icon="Hover"),
                 output_widget("timeline_chart"),
             ),
         ),
@@ -223,13 +159,13 @@ ai_tab = ui.nav_panel(
         ui.layout_columns(
             # AI Types of Crime Donut Chart
             ui.card(
-                ui.card_header("Types of Crime"),
+                get_card_header("Crime Timeline", icon="Hover"),
                 output_widget("ai_donut_plot"),
                 height="380px",
             ),
             # AI Crime Timeline
             ui.card(
-                ui.card_header("Crime Timeline"),
+                get_card_header("Crime Timeline", icon="Hover"),
                 ui.output_ui("ai_timeline_chart"),
                 height="380px",
             ),
