@@ -1,7 +1,12 @@
 body {
   margin: 0;
+  padding: 0;
 }
 
+.navbar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
 .bslib-value-box .plotly .modebar-container {
   display: none;
 }
