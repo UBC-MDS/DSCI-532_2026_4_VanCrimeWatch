@@ -20,7 +20,7 @@ Using publicly available data from the Vancouver Police Department (2023--2025),
 
 ## Demo
 
-![Dashboard Demo](img/demo.gif)
+![Dashboard Demo](img/m3_demo.gif)
 
 
 ## Installation & Local Development
