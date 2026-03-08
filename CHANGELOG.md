@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added querychat AI interface as new tab [#67](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/67)
-- Connected all output components (map, donut chart, timeline) to update with the querychat filtered data frame (#71)[https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71]
+- Connected all output components (map, donut chart, timeline) to update with the querychat filtered data frame [#71](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71)
 - Implemented LLM-linked filtered dataframe [#68](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68)
 - Added download button for filtered dataframe [1b3f927](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68/changes/1b3f9270152b1219bfa589461f5015de24157a2d)
 - Added extra instructions to LLM prompt to clarify informal naming conventions for neighborhoods + crime types [400ddb9](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68/changes/400ddb91e3c69cc4aa3629814742198f2c95f5e3), [2ba2e98](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68/changes/2ba2e98c98c431affd11c4cf6693cde0e935e192)
