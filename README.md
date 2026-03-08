@@ -20,7 +20,19 @@ Using publicly available data from the Vancouver Police Department (2023--2025),
 
 ## Demo
 
-![Dashboard Demo](img/demo.gif)
+![Dashboard Demo](img/m3_demo.gif)
+
+## Using the AI explorer
+
+The AI Explorer tab allows you to query the Vancouver crime dataset using plain English. Instead of manually adjusting filters, you can choose that tab and instead type questions like:
+
+- *"Show me theft crimes in Kitsilano in 2024"*
+- *"What are the most common crimes in the downtown area?"*
+- *"Show me break and enter crimes from January 2023"*
+
+The querychat tool understands informal names, for example, "downtown" will be mapped to "Central Business District" and "vandalism" will be mapped to "Mischief". Once you've queried the data, the map, charts, and dataframe will update to reflect your query. You can also download the filtered data as a CSV using the **Download Filtered CSV** button.
+
+> **Note:** The AI may still misinterpret queries, depending on the language used. This is a work in progress features that we hope to update with more detailed instructions. You can also use the main **Dashboard** tab to extract extract neighborhood names, crime types and years available.
 
 
 ## Installation & Local Development
@@ -39,13 +51,27 @@ conda env create -f environment.yml
 conda activate vancrimewatch
 ```
 
-### 3. Run the dashboard
+### 3. Set up your Anthropic API key
+
+The AI Explorer tab requires an [Anthropic](https://console.anthropic.com) API key. Make sure to set one up if you wish to use the querychat tool locally.
+
+Create a `.env` file in the root of the repository:
+```bash
+touch .env
+```
+
+Add your API key to the file:
+```
+ANTHROPIC_API_KEY=your_api_key_here
+```
+
+### 4. Run the dashboard
 
 ```bash
 shiny run src/app.py --reload
 ```
 
-### 4. Open in your browser
+### 5. Open in your browser
 
 ```
 http://127.0.0.1:8000

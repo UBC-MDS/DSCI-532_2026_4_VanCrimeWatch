@@ -1,5 +1,11 @@
 body {
   margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .bslib-value-box .plotly .modebar-container {
@@ -43,15 +49,70 @@ body {
   line-height: 1;
 }
 
-/* Plotly dark mode for timeline chart: make axis labels, titles, and legend readable */
 [data-bs-theme="dark"] .plotly .xtick text,
 [data-bs-theme="dark"] .plotly .ytick text,
 [data-bs-theme="dark"] .plotly .g-xtitle text,
 [data-bs-theme="dark"] .plotly .g-ytitle text,
-[data-bs-theme="dark"] .plotly .legendtext {
+[data-bs-theme="dark"] .plotly .legendtext,
+[data-bs-theme="dark"] .plotly .legendtitletext {
   fill: #dee2e6 !important;
 }
 
 [data-bs-theme="dark"] .plotly .hoverlayer text {
   fill: #333 !important;
+}
+
+[data-bs-theme="dark"] .shiny-data-grid thead th {
+    background-color: #1e1e2e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .shiny-data-grid tbody tr.selected,
+[data-bs-theme="dark"] .shiny-data-grid tbody tr:focus,
+[data-bs-theme="dark"] .shiny-data-grid tbody tr[aria-selected="true"] {
+    background-color: #3a3a5c !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .shiny-data-grid tbody tr:hover {
+    background-color: #2a2a3e !important;
+    color: #ffffff !important;
+}
+
+.tab-pane:last-child .bslib-sidebar-layout>.sidebar {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.tab-pane:last-child .bslib-sidebar-layout>.main {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+/* fixed height within sidebar */
+.chat-container {
+  height: calc(100vh - 180px) !important;
+  max-height: calc(100vh - 180px) !important;
+}
+
+.row-flex {
+  display: flex;
+  align-items: center;
+}
+
+.badge-right {
+  margin-left: auto;
+  background: #e8f0fe;
+  color: #1a73e8;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid #c5d8fb;
+}
+
+[data-bs-theme="dark"] .badge-right {
+  background: #1f3a5f;
+  color: #8ab4f8;
+  border: 1px solid #3b5a8a;
 }
