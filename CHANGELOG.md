@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addressed instructor's [HARD](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/62) improvement, changed default options to be more user specific [#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
 - Addressed TA improvement: Increased legend font size in donut chart + added percentage and hover labels for better user-guidance[#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
 - Changed donut chart from altair to plotly to address display issues + accomodate additional features from TA feedback [20da210](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/20da210f9a486be9f2b1aabd066c17f862cbd777)
-- Refactored code into separate files, one per output compoent[ade132a](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/ade132a7ba5a55a703b92fba9d600e958cf4e1b9)
+- Refactored code into separate files, one per output compoent [ade132a](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/ade132a7ba5a55a703b92fba9d600e958cf4e1b9)
 - Updated dashbaord demo in readme to reflect new additions [#73](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/73)
 - Updated AI-chat related dependencies [35f5d16](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/67/changes/35f5d16e90eed83c30f7df19360535ddc9d99115)
 
