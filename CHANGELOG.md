@@ -18,8 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented LLM-linked filtered dataframe [#68](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68)
 - Added download button for filtered dataframe [1b3f927](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68/changes/1b3f9270152b1219bfa589461f5015de24157a2d)
 - Added extra instructions to LLM prompt to clarify informal naming conventions for neighborhoods + crime types [400ddb9](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68/changes/400ddb91e3c69cc4aa3629814742198f2c95f5e3), [2ba2e98](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/68/changes/2ba2e98c98c431affd11c4cf6693cde0e935e192)
+- Added hover/click prompts for clearer tooltip navigation [f3f01e8](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/f3f01e8aaa74bc2f4c791dfcfa4eb042b4f6827e)
 
-## Changed 
+### Changed 
 
 - Addressed instructor's [HARD](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/62) improvement, changed default options to be more user specific [#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
 - Addressed TA improvement: Increased legend font size in donut chart + added percentage and hover labels for better user-guidance[#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
@@ -28,14 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated dashbaord demo in readme to reflect new additions [#73](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/73)
 - Updated AI-chat related dependencies [35f5d16](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/67/changes/35f5d16e90eed83c30f7df19360535ddc9d99115)
 
-## Fixed
+### Fixed
 
 - Fixed reset button to align with new default settings [89fca3d](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/89fca3d624e653a7a817f5aa712df6d03a6ed4f9)
 - Fixed import statment in app.py to avoid local/remote errors upon deployment [3cbff4c](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/3cbff4c83f3e659e1c88483b058e33dd9f29f658)
 - Resized outputs in new AI tab to fix display errors(chart cutoffs, zooming defaults) [4587e14](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/4587e142b2aff0b11ccf641e4efc4fe77b47d216), [061c233](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/061c233dd5ee18b058650e004e99eceb3938230f), [a6ff9a8](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/67/changes/a6ff9a81df8a725ba4b6035f491dfa85c6d30de7)
 - Fixed color legend titles/column names/chart titles to better accomodate darkmode color changes [7c1c2bb](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/7c1c2bb7a5cacc493c9d8d90584d60aecbe23497), [58cfb63](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/58cfb634c9726d220dc9626fdb91949b5569df78)
 
-Reflection #2:
+## Reflection 2:
 
 This milestone expanded our dashboard's capabilities with the addition of the AI explorer tab, which now allows users, especially prospective business owners, to easily query the Vancouver crime dataset using natural language through a querychat interface. The AI tab mirror's the main dashboard's outputs so that users can simply search for their desired neighborhoods, relevant crime types and the years they are interested in exploring. Additionally, if users want to conduct their own analysis, they are able to download the filtered dataframe. We also updated our default settings to show the neighborhoods with the most bakeries and the most business-relevant crime types (like theft and break and enter-commercial) from the past year (2025). This allows for a more meaningful starting view, giving users better guidance in the questions they may want to explore further, instead of having all options selected as a default which we realized can be overwhelming. Since it is quite easy for users to miss useful tooltip features, we added icons to help with tooltip navigation for each plot. Lastly, we expanded LLM instructions so that informal naming conventions like 'downtown' or 'vandalism' can be translated to their related crime-type/neighborhoods which may be named differently in the raw data.
 
