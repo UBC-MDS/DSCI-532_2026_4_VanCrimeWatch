@@ -5,7 +5,7 @@ import pandas as pd
 import sys, os
 from dotenv import load_dotenv
 from querychat import QueryChat
-from llm_logger import COOKIE_JS, history_tab, llm_logger
+
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -16,12 +16,14 @@ if __package__ and __package__ != "__main__":
     from src.map_render import _make_map
     from src.timeline_chart import _make_timeline_chart
     from src.helpers import *
+    from src.llm_logger import COOKIE_JS, history_tab, llm_logger
 else:
     from kpi_cards import *
     from donut_chart import _make_donut_plot
     from map_render import _make_map
     from timeline_chart import _make_timeline_chart
     from helpers import *
+    from llm_logger import COOKIE_JS, history_tab, llm_logger
 
 appdir = Path(__file__).parent
 
