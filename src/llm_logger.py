@@ -8,8 +8,14 @@ from dotenv import load_dotenv
 from pathlib import Path
 load_dotenv(Path(__file__).parent.parent / ".env")
 
-_mongo_client = MongoClient(os.environ["PYMONGO_URI"])
-_collection = _mongo_client["vancrime"]["query_log"]
+try:
+    _mongo_client = MongoClient(os.environ["PYMONGO_URI"])
+    _collection = _mongo_client["vancrime"]["query_log"]
+except Exception as e:
+    print(f"[logger] Failed to connect to MongoDB: {e}")
+    _mongo_client = None
+    _collection = None
+
 SCHEMA = ["timestamp", "user_query", "sql", "tool", "model", "n_rows"]
 
 def save_info(row: dict) -> None:
@@ -120,7 +126,11 @@ def llm_logger(input, output, session, qc_vals):
             return pd.DataFrame(columns=SCHEMA)
         if not tok:
             return pd.DataFrame(columns=SCHEMA)
-        rows = list(_collection.find({"user_token": tok}, {"_id": 0}))
+        try:
+            rows = list(_collection.find({"user_token": tok}, {"_id": 0}))
+        except Exception as e:
+            print(f"[logger] Error fetching history: {e}")
+            return pd.DataFrame(columns=SCHEMA)
         df = pd.DataFrame(rows)
         if not df.empty and "timestamp" in df.columns:
             df = df.sort_values("timestamp", ascending=False)
