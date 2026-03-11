@@ -16,6 +16,7 @@ dependencies:
   - altair
   - ipywidgets
   - pyproj
+  - pymongo
   - pip:
     - querychat
     - chatlas

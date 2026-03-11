@@ -1,8 +1,10 @@
+from pymongo import MongoClient
 from shiny import App, ui, reactive, render
 from shinywidgets import output_widget, render_widget
 from pathlib import Path
 import pandas as pd
-import sys
+import sys, os
+from datetime import datetime
 from dotenv import load_dotenv
 from querychat import QueryChat
 
@@ -28,6 +30,13 @@ filename = f"combined_crime_data_2023_2025.csv"
 path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
 
+base_df["TYPE"] = base_df["TYPE"].replace(
+    {
+        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
+        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
+    }
+)
+
 neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
 crimetypes = base_df["TYPE"].unique().tolist()
 
@@ -39,13 +48,6 @@ business_crime_types = [
     "Theft of Vehicle",
 ]
 
-base_df["TYPE"] = base_df["TYPE"].replace(
-    {
-        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
-        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
-    }
-)
-
 
 qc = QueryChat(
     base_df,
@@ -54,6 +56,16 @@ qc = QueryChat(
     #    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
     extra_instructions=extra_instructions,
 )
+
+_mongo_client = MongoClient(os.environ["PYMONGO_URI"])
+_collection = _mongo_client["vancrime"]["query_log"]
+
+def save_info(row: dict) -> None:
+    """Atomic insert — safe under multiple Posit Connect workers."""
+    try:
+        _collection.insert_one(row)
+    except Exception as e:
+        print(f"[logger] MongoDB write failed: {e}")
 
 dashboard_tab = ui.nav_panel(
     "Dashboard",
@@ -221,9 +233,41 @@ app_ui = ui.page_navbar(
 def server(input, output, session):
     qc_vals = qc.server()
 
-    # Helper to get pandas df from querychat:
-    #   df = qc_vals.df()
-    #   df = df.to_native() if hasattr(df, "to_native") else df
+    pending = reactive.value(None)
+
+    def on_query(req):
+        """Fires inside Extended Task — only .set() allowed here, no reactive reads."""
+        if req.name not in ("querychat_update_dashboard", "querychat_query"):
+            return
+        sql = req.arguments.get("query", "")
+        if not sql:
+            return
+        turns = qc_vals.client.get_turns()
+        user_turns = [t for t in turns if t.role == "user"]
+        pending.set({
+            "user_query": user_turns[-1].text if user_turns else "(unknown)",
+            "sql": sql,
+            "tool": req.name,
+        })
+
+    qc_vals.client.on_tool_request(on_query)  # register the hook
+
+    @reactive.effect
+    def flush_log():
+        """Reads pending, enriches with reactive values, writes to MongoDB."""
+        entry = pending()
+        if not entry:
+            return
+        df = qc_vals.df()
+        df = df.to_native() if hasattr(df, "to_native") else df
+        entry["timestamp"] = datetime.now().isoformat(timespec="seconds")
+        entry["model"] = "anthropic/claude-haiku-4-5"
+        entry["n_rows"] = len(df)
+        entry["session_id"] = session.id
+        save_info(entry)
+        pending.set(None)  # clear to avoid re-fire
+
+    # ── Dashboard outputs ─────────────────────────────────────────────────────
 
     @render.data_frame
     def ai_data_table():
