@@ -60,28 +60,41 @@ dashboard_tab = ui.nav_panel(
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
+            ui.input_selectize(
+                id="input_neighbourhood",
+                label="Select Neighbourhoods:",
+                choices=neighbourhoods,
+                multiple=True,
+                selected=[
+                    "Central Business District",
+                    "West End",
+                ],
+                options={
+                    "placeholder": "Displaying All",
+                },
+            ),
+            ui.input_action_button(
+                id="clear_neighbourhood",
+                label="✕ Clear Selection",
+                class_="btn btn-sm btn-outline-danger mt-1 d-block mx-auto",
+            ),
+        ),
+            ui.div(
                 ui.input_selectize(
-                    id="input_neighbourhood",
-                    label="Select Neighbourhoods:",
-                    choices=neighbourhoods,
+                    id="input_crime_type",
+                    label="Select Crime Types:",
+                    choices=crimetypes,
                     multiple=True,
-                    selected=[
-                        "Central Business District",
-                        "West End",
-                    ],  # default selects popular neighbourhoods
+                    selected=business_crime_types,
                     options={
                         "placeholder": "Displaying All",
-                        "plugins": ["clear_button"],
                     },
-                )
-            ),
-            ui.input_selectize(
-                id="input_crime_type",
-                label="Select Crime Types:",
-                choices=crimetypes,
-                multiple=True,
-                selected=business_crime_types,  # default selects common business crime types
-                options={"placeholder": "Displaying All", "plugins": ["clear_button"]},
+                ),
+                ui.input_action_button(
+                    id="clear_crime_type",
+                    label="✕ Clear Selection",
+                    class_="btn btn-sm btn-outline-danger mt-1 d-block mx-auto",
+                ),
             ),
             ui.p("TIMELINE"),
             ui.input_radio_buttons(
@@ -287,6 +300,16 @@ def server(input, output, session):
         ui.update_checkbox_group("input_year", selected=["2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
 
+    @reactive.effect
+    @reactive.event(input.clear_neighbourhood)
+    def _():
+        ui.update_selectize("input_neighbourhood", selected=[])
+
+    @reactive.effect
+    @reactive.event(input.clear_crime_type)
+    def _():
+        ui.update_selectize("input_crime_type", selected=[])
+        
     @render.ui
     def ai_timeline_chart():
         df = qc_vals.df()
