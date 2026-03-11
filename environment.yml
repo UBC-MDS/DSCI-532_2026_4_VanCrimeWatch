@@ -17,6 +17,7 @@ dependencies:
   - ipywidgets
   - pyproj
   - pymongo
+  - markdown
   - pip:
     - querychat
     - chatlas

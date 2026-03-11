@@ -21,6 +21,7 @@ python-dateutil==2.9.0.post0
 
 #Connect to db
 pymongo==4.16.0
+markdown==3.10.2
 
 querychat>=0.5.0
 chatlas>=0.15.0
