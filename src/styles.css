@@ -79,12 +79,12 @@ body {
     color: #ffffff !important;
 }
 
-.tab-pane:last-child .bslib-sidebar-layout>.sidebar {
+.tab-pane:nth-child(2) .bslib-sidebar-layout>.sidebar {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
 
-.tab-pane:last-child .bslib-sidebar-layout>.main {
+.tab-pane:nth-child(2) .bslib-sidebar-layout>.main {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
