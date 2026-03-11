@@ -1,12 +1,11 @@
-from pymongo import MongoClient
 from shiny import App, ui, reactive, render
 from shinywidgets import output_widget, render_widget
 from pathlib import Path
 import pandas as pd
 import sys, os
-from datetime import datetime
 from dotenv import load_dotenv
 from querychat import QueryChat
+from llm_logger import COOKIE_JS, history_tab, llm_logger
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -57,18 +56,10 @@ qc = QueryChat(
     extra_instructions=extra_instructions,
 )
 
-_mongo_client = MongoClient(os.environ["PYMONGO_URI"])
-_collection = _mongo_client["vancrime"]["query_log"]
-
-def save_info(row: dict) -> None:
-    """Atomic insert — safe under multiple Posit Connect workers."""
-    try:
-        _collection.insert_one(row)
-    except Exception as e:
-        print(f"[logger] MongoDB write failed: {e}")
 
 dashboard_tab = ui.nav_panel(
     "Dashboard",
+    COOKIE_JS,
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
@@ -213,6 +204,7 @@ ai_tab = ui.nav_panel(
 app_ui = ui.page_navbar(
     dashboard_tab,
     ai_tab,
+    history_tab,
     ui.nav_spacer(),
     ui.nav_control(
         ui.input_dark_mode(id="mode", mode="light"),
@@ -233,41 +225,7 @@ app_ui = ui.page_navbar(
 def server(input, output, session):
     qc_vals = qc.server()
 
-    pending = reactive.value(None)
-
-    def on_query(req):
-        """Fires inside Extended Task — only .set() allowed here, no reactive reads."""
-        if req.name not in ("querychat_update_dashboard", "querychat_query"):
-            return
-        sql = req.arguments.get("query", "")
-        if not sql:
-            return
-        turns = qc_vals.client.get_turns()
-        user_turns = [t for t in turns if t.role == "user"]
-        pending.set({
-            "user_query": user_turns[-1].text if user_turns else "(unknown)",
-            "sql": sql,
-            "tool": req.name,
-        })
-
-    qc_vals.client.on_tool_request(on_query)  # register the hook
-
-    @reactive.effect
-    def flush_log():
-        """Reads pending, enriches with reactive values, writes to MongoDB."""
-        entry = pending()
-        if not entry:
-            return
-        df = qc_vals.df()
-        df = df.to_native() if hasattr(df, "to_native") else df
-        entry["timestamp"] = datetime.now().isoformat(timespec="seconds")
-        entry["model"] = "anthropic/claude-haiku-4-5"
-        entry["n_rows"] = len(df)
-        entry["session_id"] = session.id
-        save_info(entry)
-        pending.set(None)  # clear to avoid re-fire
-
-    # ── Dashboard outputs ─────────────────────────────────────────────────────
+    llm_logger(input, output, session, qc_vals)
 
     @render.data_frame
     def ai_data_table():
