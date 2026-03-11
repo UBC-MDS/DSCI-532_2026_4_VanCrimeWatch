@@ -1,3 +1,4 @@
+import html
 import os
 from datetime import datetime
 
@@ -7,6 +8,8 @@ from shiny import reactive, render, ui
 from dotenv import load_dotenv
 from pathlib import Path
 load_dotenv(Path(__file__).parent.parent / ".env")
+import re, markdown
+
 
 try:
     _mongo_client = MongoClient(os.environ["PYMONGO_URI"])
@@ -16,13 +19,35 @@ except Exception as e:
     _mongo_client = None
     _collection = None
 
-SCHEMA = ["timestamp", "user_query", "sql", "tool", "model", "n_rows"]
+SCHEMA = ["timestamp", "user_query", "sql", "tool", "model", "llm_output", "input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens", "cost", "n_rows"]
+DISPLAY_SCHEMA = ["timestamp", "user_query", "sql", "tool", "llm_output"]
 
 def save_info(row: dict) -> None:
     try:
         _collection.insert_one(row)
     except Exception as e:
         print(f"[logger] MongoDB write failed: {e}")
+
+def strip_suggestions(text: str) -> str:
+    # Cut off at the horizontal rule that precedes suggestions
+    text = re.sub(r'<span class="suggestion">|<.?span>', '', text)
+    return text.strip()
+
+def to_html(text: str) -> str:
+    return markdown.markdown(text, extensions=["tables"])
+
+def format_sql(sql):
+    return ui.HTML(
+        f"""
+        <pre style="
+            margin:0;
+            white-space:pre-wrap;
+            word-break:break-word;
+            overflow-wrap:anywhere;
+            font-size:12px;
+        "><code>{html.escape(sql)}</code></pre>
+        """
+    )
 
 COOKIE_JS = ui.tags.script("""
 (function() {
@@ -61,7 +86,7 @@ history_tab = ui.nav_panel(
                             ui.HTML('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>'),
                             " Load Latest",
                         ),
-                        class_="btn-outline-secondary btn-sm me-1",
+                        class_="btn-secondary btn-sm me-1",
                     ),
                     ui.download_button(
                         "download_history",
@@ -104,16 +129,45 @@ def llm_logger(input, output, session, qc_vals):
         entry = pending()
         if not entry:
             return
+
+        # Get last model response
+        turns = qc_vals.client.get_turns()
+        llm_turns = [t for t in turns if t.role != "user"]
+        last = llm_turns[-1] if llm_turns else None
+
+        # Fall back to second-to-last turn if last has no text
+        if last and not last.text.strip():
+            text_turns = [t for t in llm_turns if t.text and t.text.strip()]
+            last = text_turns[-1] if text_turns else last
+
+        llm_output = last.text if last else "(no model response)"
+        entry["llm_output"] = strip_suggestions(llm_output)
+
+        # Token + cost metadata
+        if last and last.completion:
+            usage = last.completion.usage
+            entry["input_tokens"] = usage.input_tokens
+            entry["output_tokens"] = usage.output_tokens
+            entry["cache_read_tokens"] = usage.cache_read_input_tokens
+            entry["cache_write_tokens"] = usage.cache_creation_input_tokens
+            entry["cost"] = last.cost
+
+        # Dataset metadata
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
-        entry["timestamp"] = datetime.now().isoformat(timespec="seconds")
-        entry["model"] = "anthropic/claude-haiku-4-5"
-        entry["n_rows"] = len(df)
-        entry["session_id"] = session.id
+
+        entry.update({
+            "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "model": "anthropic/claude-haiku-4-5",
+            "n_rows": len(df),
+            "session_id": session.id,
+        })
+
         try:
             entry["user_token"] = input.user_token()
         except Exception:
             entry["user_token"] = None
+
         save_info(entry)
         pending.set(None)
 
@@ -123,14 +177,14 @@ def llm_logger(input, output, session, qc_vals):
         try:
             tok = input.user_token()
         except Exception:
-            return pd.DataFrame(columns=SCHEMA)
+            return pd.DataFrame(columns=DISPLAY_SCHEMA)
         if not tok:
-            return pd.DataFrame(columns=SCHEMA)
+            return pd.DataFrame(columns=DISPLAY_SCHEMA)
         try:
             rows = list(_collection.find({"user_token": tok}, {"_id": 0}))
         except Exception as e:
             print(f"[logger] Error fetching history: {e}")
-            return pd.DataFrame(columns=SCHEMA)
+            return pd.DataFrame(columns=DISPLAY_SCHEMA)
         df = pd.DataFrame(rows)
         if not df.empty and "timestamp" in df.columns:
             df = df.sort_values("timestamp", ascending=False)
@@ -152,7 +206,17 @@ def llm_logger(input, output, session, qc_vals):
     @output
     @render.data_frame
     def history_table():
-        return render.DataGrid(history_data(), width="100%")
+        df = history_data().copy()[[c for c in DISPLAY_SCHEMA if c in history_data().columns]]
+        if "llm_output" in df.columns:
+            df["llm_output"] = df["llm_output"].apply(
+                lambda text: to_html(text) if isinstance(text, str) else text
+            )
+            df["llm_output"] = df["llm_output"].apply(ui.HTML)
+        if "sql" in df.columns:
+            df["sql"] = df["sql"].apply(
+                lambda text: format_sql(text) if isinstance(text, str) else text
+            )
+        return render.DataGrid(df, width="100%")
 
     @output
     @render.download(filename="my_chat_history.csv")
