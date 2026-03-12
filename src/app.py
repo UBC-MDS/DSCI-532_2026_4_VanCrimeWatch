@@ -76,7 +76,7 @@ dashboard_tab = ui.nav_panel(
             ui.input_action_button(
                 id="clear_neighbourhood",
                 label="✕ Clear Selection",
-                class_="btn btn-sm btn-outline-danger mt-1 d-block mx-auto",
+                class_="btn btn-sm btn-outline-secondary mt-1 d-block mx-auto",
             ),
         ),
             ui.div(
@@ -93,7 +93,7 @@ dashboard_tab = ui.nav_panel(
                 ui.input_action_button(
                     id="clear_crime_type",
                     label="✕ Clear Selection",
-                    class_="btn btn-sm btn-outline-danger mt-1 d-block mx-auto",
+                    class_="btn btn-sm btn-outline-secondary mt-1 d-block mx-auto",
                 ),
             ),
             ui.p("TIMELINE"),
