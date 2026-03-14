@@ -8,6 +8,12 @@ body {
   padding-right: 1rem;
 }
 
+/* Increase font size for navbar tab titles */
+.navbar-nav .nav-link {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
 .bslib-value-box .plotly .modebar-container {
   display: none;
 }
