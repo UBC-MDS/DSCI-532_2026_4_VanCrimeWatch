@@ -2,9 +2,10 @@ from shiny import App, ui, reactive, render
 from shinywidgets import output_widget, render_widget
 from pathlib import Path
 import pandas as pd
-import sys
+import sys, os
 from dotenv import load_dotenv
 from querychat import QueryChat
+
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -15,18 +16,27 @@ if __package__ and __package__ != "__main__":
     from src.map_render import _make_map
     from src.timeline_chart import _make_timeline_chart
     from src.helpers import *
+    from src.llm_logger import COOKIE_JS, history_tab, llm_logger
 else:
     from kpi_cards import *
     from donut_chart import _make_donut_plot
     from map_render import _make_map
     from timeline_chart import _make_timeline_chart
     from helpers import *
+    from llm_logger import COOKIE_JS, history_tab, llm_logger
 
 appdir = Path(__file__).parent
 
 filename = f"combined_crime_data_2023_2025.csv"
 path = appdir.parent / "data" / "processed" / filename
 base_df = pd.read_csv(path)
+
+base_df["TYPE"] = base_df["TYPE"].replace(
+    {
+        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
+        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
+    }
+)
 
 neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
 crimetypes = base_df["TYPE"].unique().tolist()
@@ -39,13 +49,6 @@ business_crime_types = [
     "Theft of Vehicle",
 ]
 
-base_df["TYPE"] = base_df["TYPE"].replace(
-    {
-        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
-        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
-    }
-)
-
 
 qc = QueryChat(
     base_df,
@@ -55,33 +58,48 @@ qc = QueryChat(
     extra_instructions=extra_instructions,
 )
 
+
 dashboard_tab = ui.nav_panel(
     "Dashboard",
+    COOKIE_JS,
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
+            ui.input_selectize(
+                id="input_neighbourhood",
+                label="Select Neighbourhoods:",
+                choices=neighbourhoods,
+                multiple=True,
+                selected=[
+                    "Central Business District",
+                    "West End",
+                ],
+                options={
+                    "placeholder": "Displaying All",
+                },
+            ),
+            ui.input_action_button(
+                id="clear_neighbourhood",
+                label="✕ Clear Selection",
+                class_="btn btn-sm btn-outline-secondary mt-1 d-block mx-auto",
+            ),
+        ),
+            ui.div(
                 ui.input_selectize(
-                    id="input_neighbourhood",
-                    label="Select Neighbourhoods:",
-                    choices=neighbourhoods,
+                    id="input_crime_type",
+                    label="Select Crime Types:",
+                    choices=crimetypes,
                     multiple=True,
-                    selected=[
-                        "Central Business District",
-                        "West End",
-                    ],  # default selects popular neighbourhoods
+                    selected=business_crime_types,
                     options={
                         "placeholder": "Displaying All",
-                        "plugins": ["clear_button"],
                     },
-                )
-            ),
-            ui.input_selectize(
-                id="input_crime_type",
-                label="Select Crime Types:",
-                choices=crimetypes,
-                multiple=True,
-                selected=business_crime_types,  # default selects common business crime types
-                options={"placeholder": "Displaying All", "plugins": ["clear_button"]},
+                ),
+                ui.input_action_button(
+                    id="clear_crime_type",
+                    label="✕ Clear Selection",
+                    class_="btn btn-sm btn-outline-secondary mt-1 d-block mx-auto",
+                ),
             ),
             ui.p("TIMELINE"),
             ui.input_radio_buttons(
@@ -201,6 +219,7 @@ ai_tab = ui.nav_panel(
 app_ui = ui.page_navbar(
     dashboard_tab,
     ai_tab,
+    history_tab,
     ui.nav_spacer(),
     ui.nav_control(
         ui.input_dark_mode(id="mode", mode="light"),
@@ -221,9 +240,7 @@ app_ui = ui.page_navbar(
 def server(input, output, session):
     qc_vals = qc.server()
 
-    # Helper to get pandas df from querychat:
-    #   df = qc_vals.df()
-    #   df = df.to_native() if hasattr(df, "to_native") else df
+    llm_logger(input, output, session, qc_vals)
 
     @render.data_frame
     def ai_data_table():
@@ -304,6 +321,15 @@ def server(input, output, session):
             # Let the user know why their action was reversed
             ui.notification_show("Please select at least one year.", type="warning", duration=3)
 
+    @reactive.event(input.clear_neighbourhood)
+    def _():
+        ui.update_selectize("input_neighbourhood", selected=[])
+
+    @reactive.effect
+    @reactive.event(input.clear_crime_type)
+    def _():
+        ui.update_selectize("input_crime_type", selected=[])
+        
     @render.ui
     def ai_timeline_chart():
         df = qc_vals.df()

@@ -8,6 +8,12 @@ body {
   padding-right: 1rem;
 }
 
+/* Increase font size for navbar tab titles */
+.navbar-nav .nav-link {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
 .bslib-value-box .plotly .modebar-container {
   display: none;
 }
@@ -79,12 +85,12 @@ body {
     color: #ffffff !important;
 }
 
-.tab-pane:last-child .bslib-sidebar-layout>.sidebar {
+.tab-pane:nth-child(2) .bslib-sidebar-layout>.sidebar {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
 
-.tab-pane:last-child .bslib-sidebar-layout>.main {
+.tab-pane:nth-child(2) .bslib-sidebar-layout>.main {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
@@ -122,4 +128,7 @@ body {
     bottom: 20px;
     left: 20px;
     right: auto;
+[data-bs-theme="dark"] .btn-outline-secondary {
+  color: #dee2e6;
+  border-color: #6c757d;
 }
