@@ -269,8 +269,13 @@ def server(input, output, session):
         selected_neighbourhoods = list(input.input_neighbourhood())
 
         df = base_df
-        if selected_years:
-            df = df[df["YEAR"].astype(str).isin(selected_years)]
+
+        # If selected_year is empty, return an empty dataframe immediately 
+        if not selected_years:
+            return df.iloc[0:0]
+        
+        df = df[df["YEAR"].astype(str).isin(selected_years)]
+
         if selected_crimes:
             df = df[df["TYPE"].isin(selected_crimes)]
         if selected_neighbourhoods:
