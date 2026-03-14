@@ -123,12 +123,14 @@ body {
   border: 1px solid #3b5a8a;
 }
 
+[data-bs-theme="dark"] .btn-outline-secondary {
+  color: #dee2e6;
+  border-color: #6c757d;
+}
+
 /* Move Shiny notifications to the bottom left */
 #shiny-notification-panel {
     bottom: 20px;
     left: 20px;
     right: auto;
-[data-bs-theme="dark"] .btn-outline-secondary {
-  color: #dee2e6;
-  border-color: #6c757d;
 }
