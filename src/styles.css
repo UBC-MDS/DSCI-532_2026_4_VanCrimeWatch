@@ -79,12 +79,12 @@ body {
     color: #ffffff !important;
 }
 
-.tab-pane:last-child .bslib-sidebar-layout>.sidebar {
+.tab-pane:nth-child(2) .bslib-sidebar-layout>.sidebar {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
 
-.tab-pane:last-child .bslib-sidebar-layout>.main {
+.tab-pane:nth-child(2) .bslib-sidebar-layout>.main {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
@@ -115,4 +115,9 @@ body {
   background: #1f3a5f;
   color: #8ab4f8;
   border: 1px solid #3b5a8a;
+}
+
+[data-bs-theme="dark"] .btn-outline-secondary {
+  color: #dee2e6;
+  border-color: #6c757d;
 }

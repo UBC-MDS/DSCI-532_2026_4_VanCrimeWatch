@@ -65,13 +65,24 @@ Add your API key to the file:
 ANTHROPIC_API_KEY=your_api_key_here
 ```
 
-### 4. Run the dashboard
+### 4. Set up your MongoDB URI
+
+The Chat History tab requires a [MongoDB Cloud](https://cloud.mongodb.com/) Cluster and URI key to connect pymongo to a mongodb cloud cluster. Make sure to set one up if you wish to use the history tool locally.
+
+Once you have set up a cluster, and the `.env` file is created in the above step:
+
+Add your API key to the `.env` file:
+```
+PYMONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/?appName=<cluster>
+```
+
+### 5. Run the dashboard
 
 ```bash
 shiny run src/app.py --reload
 ```
 
-### 5. Open in your browser
+### 6. Open in your browser
 
 ```
 http://127.0.0.1:8000
