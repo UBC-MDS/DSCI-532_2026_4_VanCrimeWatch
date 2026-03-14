@@ -286,8 +286,13 @@ def server(input, output, session):
         selected_neighbourhoods = list(input.input_neighbourhood())
 
         df = base_df
-        if selected_years:
-            df = df[df["YEAR"].astype(str).isin(selected_years)]
+
+        # If selected_year is empty, return an empty dataframe immediately 
+        if not selected_years:
+            return df.iloc[0:0]
+        
+        df = df[df["YEAR"].astype(str).isin(selected_years)]
+
         if selected_crimes:
             df = df[df["TYPE"].isin(selected_crimes)]
         if selected_neighbourhoods:
@@ -305,6 +310,17 @@ def server(input, output, session):
         ui.update_radio_buttons("time_display", selected="monthly")
 
     @reactive.effect
+    def _enforce_year_selection():
+        selected_years = input.input_year()
+        
+        # Check if selected_years is empty (if the user deselected everything)
+        if not selected_years:
+            # Force the checkbox group back to a default value ("2025")
+            ui.update_checkbox_group("input_year", selected=["2025"])
+            
+            # Let the user know why their action was reversed
+            ui.notification_show("Please select at least one year.", type="warning", duration=3)
+
     @reactive.event(input.clear_neighbourhood)
     def _():
         ui.update_selectize("input_neighbourhood", selected=[])
