@@ -116,3 +116,10 @@ body {
   color: #8ab4f8;
   border: 1px solid #3b5a8a;
 }
+
+/* Move Shiny notifications to the bottom left */
+#shiny-notification-panel {
+    bottom: 20px;
+    left: 20px;
+    right: auto;
+}
