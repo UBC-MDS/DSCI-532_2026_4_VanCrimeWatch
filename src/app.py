@@ -281,22 +281,13 @@ def server(input, output, session):
 
     @reactive.calc
     def filtered_data():
-        selected_years = list(input.input_year())
-        selected_crimes = list(input.input_crime_type())
-        selected_neighbourhoods = list(input.input_neighbourhood())
+        df = filter_crime_data(
+            df=base_df,
+            years=list(input.input_year()),
+            crimes=list(input.input_crime_type()),
+            neighbourhoods=list(input.input_neighbourhood())
+        )
 
-        df = base_df
-
-        # If selected_year is empty, return an empty dataframe immediately 
-        if not selected_years:
-            return df.iloc[0:0]
-        
-        df = df[df["YEAR"].astype(str).isin(selected_years)]
-
-        if selected_crimes:
-            df = df[df["TYPE"].isin(selected_crimes)]
-        if selected_neighbourhoods:
-            df = df[df["NEIGHBOURHOOD"].isin(selected_neighbourhoods)]
         return df
 
     render_kpis(output, input, filtered_data)
