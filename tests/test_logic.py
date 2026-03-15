@@ -15,7 +15,7 @@ def sample_crime_df():
         "NEIGHBOURHOOD": ["West End", "Central Business District", "Kitsilano"]
     })
 
-def test_filter_empty_years_boundary(sample_crime_df):
+def test_filter_empty_years(sample_crime_df):
     """Providing an empty list for years returns an empty dataframe."""
     result = filter_crime_data(
         df=sample_crime_df, 
