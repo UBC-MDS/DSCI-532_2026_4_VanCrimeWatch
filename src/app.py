@@ -32,10 +32,7 @@ con = ibis.duckdb.connect()
 base_df = con.read_parquet(parquet_path)
 
 base_df = base_df.mutate(
-    TYPE=ibis.cases()
-        .when(_.TYPE.contains("Vehicle Collision"), "Vehicle Collision or Pedestrian Struck")
-        .else_(_.TYPE)
-        .end())
+    TYPE=_.TYPE.re_replace("Vehicle Collision or Pedestrian Struck.*", "Vehicle Collision or Pedestrian Struck"))
 
 neighbourhoods = base_df.select("NEIGHBOURHOOD").distinct().execute()["NEIGHBOURHOOD"].dropna().tolist()
 crimetypes = base_df.select("TYPE").distinct().execute()["TYPE"].dropna().tolist()
