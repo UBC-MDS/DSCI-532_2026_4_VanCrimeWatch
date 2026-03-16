@@ -5,6 +5,8 @@ import pandas as pd
 import sys
 from dotenv import load_dotenv
 from querychat import QueryChat
+import ibis
+from ibis import _
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -24,12 +26,19 @@ else:
 
 appdir = Path(__file__).parent
 
-filename = f"combined_crime_data_2023_2025.csv"
-path = appdir.parent / "data" / "processed" / filename
-base_df = pd.read_csv(path)
+#replaced data loading with lazy loading: parquet + DuckDB
+parquet_path = str(appdir.parent / "data" / "processed" / "combined_crime_data_2023_2025.parquet")
+con = ibis.duckdb.connect()
+base_df = con.read_parquet(parquet_path)
 
-neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
-crimetypes = base_df["TYPE"].unique().tolist()
+base_df = base_df.mutate(
+    TYPE=ibis.case()
+        .when(_.TYPE.contains("Vehicle Collision"), "Vehicle Collision or Pedestrian Struck")
+        .else_(_.TYPE)
+        .end())
+
+neighbourhoods = base_df.select("NEIGHBOURHOOD").distinct().execute()["NEIGHBOURHOOD"].dropna().tolist()
+crimetypes = base_df.select("TYPE").distinct().execute()["TYPE"].dropna().tolist()
 
 business_crime_types = [
     "Break and Enter Commercial",
@@ -38,14 +47,6 @@ business_crime_types = [
     "Mischief",
     "Theft of Vehicle",
 ]
-
-base_df["TYPE"] = base_df["TYPE"].replace(
-    {
-        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
-        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
-    }
-)
-
 
 qc = QueryChat(
     base_df,
@@ -219,6 +220,7 @@ app_ui = ui.page_navbar(
 
 
 def server(input, output, session):
+    session.on_ended(con.disconnect)
     qc_vals = qc.server()
 
     # Helper to get pandas df from querychat:
@@ -264,18 +266,18 @@ def server(input, output, session):
 
     @reactive.calc
     def filtered_data():
-        selected_years = list(input.input_year())
+        selected_years = [int(y) for y in input.input_year()]
         selected_crimes = list(input.input_crime_type())
         selected_neighbourhoods = list(input.input_neighbourhood())
 
-        df = base_df
+        expr = base_df
         if selected_years:
-            df = df[df["YEAR"].astype(str).isin(selected_years)]
+            expr = expr.filter(_.YEAR.isin(selected_years))
         if selected_crimes:
-            df = df[df["TYPE"].isin(selected_crimes)]
+            expr = expr.filter(_.TYPE.isin(selected_crimes))
         if selected_neighbourhoods:
-            df = df[df["NEIGHBOURHOOD"].isin(selected_neighbourhoods)]
-        return df
+            expr = expr.filter(_.NEIGHBOURHOOD.isin(selected_neighbourhoods))
+        return expr.execute()
 
     render_kpis(output, input, filtered_data)
 
