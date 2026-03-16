@@ -6,7 +6,6 @@ import sys, os
 from dotenv import load_dotenv
 from querychat import QueryChat
 import ibis
-from ibis import _
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -34,7 +33,7 @@ con = ibis.duckdb.connect()
 base_df = con.read_parquet(parquet_path)
 
 base_df = base_df.mutate(
-    TYPE=_.TYPE.re_replace("Vehicle Collision or Pedestrian Struck.*", "Vehicle Collision or Pedestrian Struck"))
+    TYPE=base_df.TYPE.re_replace("Vehicle Collision or Pedestrian Struck.*", "Vehicle Collision or Pedestrian Struck"))
 
 neighbourhoods = base_df.select("NEIGHBOURHOOD").distinct().execute()["NEIGHBOURHOOD"].dropna().tolist()
 crimetypes = base_df.select("TYPE").distinct().execute()["TYPE"].dropna().tolist()
@@ -49,7 +48,7 @@ business_crime_types = [
 
 
 qc = QueryChat(
-    base_df,
+    base_df.execute(),
     "vancouver_crime",
     client="anthropic/claude-haiku-4-5",
     #    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
@@ -284,13 +283,16 @@ def server(input, output, session):
         selected_crimes = list(input.input_crime_type())
         selected_neighbourhoods = list(input.input_neighbourhood())
 
+        if not selected_years:
+            selected_years = [2025]
+
         expr = base_df
         if selected_years:
-            expr = expr.filter(_.YEAR.isin(selected_years))
+            expr = expr.filter(expr.YEAR.isin(selected_years))
         if selected_crimes:
-            expr = expr.filter(_.TYPE.isin(selected_crimes))
+            expr = expr.filter(expr.TYPE.isin(selected_crimes))
         if selected_neighbourhoods:
-            expr = expr.filter(_.NEIGHBOURHOOD.isin(selected_neighbourhoods))
+            expr = expr.filter(expr.NEIGHBOURHOOD.isin(selected_neighbourhoods))
         return expr.execute()
 
     render_kpis(output, input, filtered_data)
