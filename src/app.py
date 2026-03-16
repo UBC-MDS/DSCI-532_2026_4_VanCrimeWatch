@@ -259,7 +259,7 @@ def server(input, output, session):
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
         if df.empty:
-            return ui.p("No data found for your query. The crime type you are searching for has no records, " \
+            return ui.p("No data found for your query. The crime type you are searching for has no records or does not exist, " \
                         "Try rephrasing or broadening your search.",
                     style="color: #6c757d; text-align: center; padding: 40px;")
         fig = _make_donut_plot(df, input, compact=True)
