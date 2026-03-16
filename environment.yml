@@ -16,6 +16,8 @@ dependencies:
   - altair
   - ipywidgets
   - pyproj
+  - ibis-framework
+  - duckdb
   - pip:
     - querychat
     - chatlas
