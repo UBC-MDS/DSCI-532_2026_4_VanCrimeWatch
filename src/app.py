@@ -32,7 +32,7 @@ con = ibis.duckdb.connect()
 base_df = con.read_parquet(parquet_path)
 
 base_df = base_df.mutate(
-    TYPE=ibis.case()
+    TYPE=ibis.cases()
         .when(_.TYPE.contains("Vehicle Collision"), "Vehicle Collision or Pedestrian Struck")
         .else_(_.TYPE)
         .end())
