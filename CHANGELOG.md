@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addressed: Add label component for filters (non-critical feedback) [#107](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/107) via [#108](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/108)
 - Address: Update readme with better example walkthrough (non-critical feedback) [#96](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/96) via [#110](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/110)
 - Updated issue templates [#112](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/112)
+- Updated `m2_spec.md` to `specification.md` with latest features [#105](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/105)
+
 
 
 ### Fixed
