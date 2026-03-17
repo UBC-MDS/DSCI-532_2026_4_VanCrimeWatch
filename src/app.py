@@ -317,6 +317,7 @@ def server(input, output, session):
             # Let the user know why their action was reversed
             ui.notification_show("Please select at least one year.", type="warning", duration=3)
 
+    @reactive.effect
     @reactive.event(input.clear_neighbourhood)
     def _():
         ui.update_selectize("input_neighbourhood", selected=[])
