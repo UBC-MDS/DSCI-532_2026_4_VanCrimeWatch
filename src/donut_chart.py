@@ -43,10 +43,10 @@ def _make_donut_plot(df, input, compact=False):
         domain=dict(x=[0, chart_domain])  # reserve space on the right for legend
     )
     fig.update_layout(
+        autosize=True,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=300 if compact else 370,
-        width=450 if compact else 550,
         margin=dict(t=10, b=10, l=0, r=100),
         legend=dict(
             title=None,

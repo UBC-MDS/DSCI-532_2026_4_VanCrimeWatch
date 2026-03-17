@@ -134,11 +134,11 @@ dashboard_tab = ui.nav_panel(
         ui.layout_columns(
             ui.card(
                 get_card_header("Types of Crime", icon="Hover"),
-                output_widget("donut_plot"),
+                ui.output_ui("donut_plot"),
             ),
             ui.card(
                 get_card_header("Crime Timeline", icon="Hover"),
-                output_widget("timeline_chart"),
+                ui.output_ui("timeline_chart"),
             ),
         ),
         fillable_mobile=True,
@@ -228,7 +228,10 @@ app_ui = ui.page_navbar(
         ui.h1("VanCrimeWatch", class_="mb-0 fs-4 text-white"),
         class_="d-flex align-items-center",
     ),
-    header=ui.include_css(appdir.parent / "src" / "styles.css"),
+    header=ui.TagList(
+        ui.include_css(appdir.parent / "src" / "styles.css"),
+        ui.tags.script(src="https://cdn.plot.ly/plotly-2.35.2.min.js"),
+    ),
     navbar_options=ui.navbar_options(
         theme="dark",
         class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
@@ -261,13 +264,14 @@ def server(input, output, session):
         fig = _make_donut_plot(df, input, compact=True)
         return ui.HTML(
             fig.to_html(
-                full_html=False, include_plotlyjs="cdn", config={"responsive": True}
+                full_html=False, include_plotlyjs=False, config={"responsive": True}
             )
         )
 
-    @render_widget
+    @render.ui
     def donut_plot():
-        return _make_donut_plot(filtered_data(), input)
+        fig = _make_donut_plot(filtered_data(), input)
+        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs=False, config={"responsive": True}))
 
     @render_widget
     def ai_map():
@@ -328,13 +332,14 @@ def server(input, output, session):
         fig = _make_timeline_chart(df, input, compact=True)
         return ui.HTML(
             fig.to_html(
-                full_html=False, include_plotlyjs="cdn", config={"responsive": True}
+                full_html=False, include_plotlyjs=False, config={"responsive": True}
             )
         )
 
-    @render_widget
+    @render.ui
     def timeline_chart():
-        return _make_timeline_chart(filtered_data(), input)
+        fig = _make_timeline_chart(filtered_data(), input)
+        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
 
 
 app = App(app_ui, server)
