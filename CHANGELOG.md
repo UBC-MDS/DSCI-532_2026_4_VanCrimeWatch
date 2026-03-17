@@ -50,11 +50,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Collaboration
 
-<!-- Summary of workflow or collaboration improvements made since M3. -->
+For this milestone, our team heavily refined our collaboration strategies based on our M3 retrospective to ensure a smoother, more equitable development process. We codified these new norms directly into our `CONTRIBUTING.md` file.
 
-- **CONTRIBUTING.md:** <!-- Link to the PR that updated it with your M3 retrospective and M4 norms. -->
-- **M3 retrospective:** <!-- What changed in your workflow after M3 collaboration feedback. -->
-- **M4:** <!-- What you tried or improved this milestone. -->
+- **CONTRIBUTING.md:** Update via PR [#106](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/106) documenting M3 retrospaective and M4 collaboration norms.
+- **M3 retrospective:** 
+During our M3 retrospective, we realized that our pull requests had become too large, which made testing, code review, and documentation a little messy. We also acknowledged that the workload was unevenly distributed, with some members taking on disproportionate amounts of coding and documentation. On the positive side, we found that refactoring code into separate files greatly improved our parallel workflow.
+- **M4:** 
+For Milestone 4, we implemented several new norms to directly address our M3 feedback. We committed to making smaller, single-issue PRs and required them to be reviewed by at least 2 team members within 24 hours. To balance the workload, every team member took responsibility for addressing at least one peer feedback item end-to-end, and distributed the coding and documentation workload evenly. Finally, we mandated that feature specifications must be updated before writing code for documentation.
 
 ### Reflection
 
@@ -69,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Tests
 
-For this milestone, I refactored the core data-filtering logic out of the Shiny server into a testable Python function (`src/helpers.py`) and implemented a testing suite using `pytest` and `playwright`.
+For this milestone, we refactored the core data-filtering logic out of the Shiny server into a testable Python function (`src/helpers.py`) and implemented a testing suite using `pytest` and `playwright`.
 
 1. Unit Tests (Logic)
 
