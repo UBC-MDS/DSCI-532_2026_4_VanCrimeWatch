@@ -9,6 +9,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upcoming features and fixes
 
+## [0.4.0] - Milestone 4 - 2026-03-17
+
+### Added
+
+- Added logs for LLM output [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
+- Added unit tests and Playwright UI tests [#99](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/99)
+- Implemented lazy loading via parquet + duckdb [#100](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/100)
+
+### Changed
+
+- Updated README with mongo URI instructions [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
+- Addressed: Enhance input selection box (non-critical feedback) [#90](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/90) via [#91](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/91)
+- Addressed: Year selector component (critical feedback) [#88](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/88) via [#97](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/97) 
+- Addressed: Irregular font sizes (non-critical feedback) [#87](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/87) via [#98](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/98)
+- Refactored filter data function [#99](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/99)
+- Updated README with instructions to run tests [#99](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/99)
+- Addressed: Mobile responsiveness (non-critical feedback) [#102](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/102) via [#101](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/101)
+- Addressed: Implement meaningful message for missing data (critical feedback) [#92](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/92) via [#103](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/103)
+- Addressed: Implement better comparison for areas with least crime vs most crime (non-critical feedback) [#93](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/93) via [#104](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/104)
+
+
+### Fixed
+
+- Fixed input selection box for issue [#90](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/90)
+- **Feedback prioritization issue link:** [#86](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/86)
+
+### Known Issues
+
+- none
+
+### Release Highlight: Persistent LLM Logging
+
+<!-- One short paragraph describing what you built and what it does for the user. -->
+
+- **Option chosen:** B 
+- **PR:** [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
+- **Why this option over the others:** <!-- 1–2 sentences; link to your feature prioritization issue -->
+- **Feature prioritization issue link:** #...
+
+### Collaboration
+
+<!-- Summary of workflow or collaboration improvements made since M3. -->
+
+- **CONTRIBUTING.md:** <!-- Link to the PR that updated it with your M3 retrospective and M4 norms. -->
+- **M3 retrospective:** <!-- What changed in your workflow after M3 collaboration feedback. -->
+- **M4:** <!-- What you tried or improved this milestone. -->
+
+### Reflection
+
+<!-- Standard (see General Guidelines): what the dashboard does well, current limitations,
+     any intentional deviations from DSCI 531 visualization best practices. -->
+
+<!-- Trade-offs: one sentence on feedback prioritization - full rationale is in #<issue> and ### Changed above. -->
+
+<!-- Most useful: which lecture, material, or feedback shaped your work most this milestone,
+     and anything you wish had been covered. -->
+
+In your reflection, describe what each test covers and what could break if the behavior changes.
+
 ## [0.3.0] - Milestone 3 - 2026-03-08
 
 ### Added
@@ -25,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addressed instructor's [HARD](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/62) improvement, changed default options to be more user specific [#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
 - Addressed TA improvement: Increased legend font size in donut chart + added percentage and hover labels for better user-guidance[#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
 - Changed donut chart from altair to plotly to address display issues + accomodate additional features from TA feedback [20da210](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/20da210f9a486be9f2b1aabd066c17f862cbd777)
-- Refactored code into separate files, one per output compoent [ade132a](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/ade132a7ba5a55a703b92fba9d600e958cf4e1b9)
+- Refactored code into separate files, one per output component [ade132a](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/ade132a7ba5a55a703b92fba9d600e958cf4e1b9)
 - Updated dashbaord demo in readme to reflect new additions [#73](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/73)
 - Updated AI-chat related dependencies [35f5d16](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/67/changes/35f5d16e90eed83c30f7df19360535ddc9d99115)
 
