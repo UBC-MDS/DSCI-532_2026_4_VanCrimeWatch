@@ -239,7 +239,7 @@ app_ui = ui.page_navbar(
 
 
 def server(input, output, session):
-    session.on_ended(con.disconnect)
+    #session.on_ended(con.disconnect)
     qc_vals = qc.server()
 
     llm_logger(input, output, session, qc_vals)
