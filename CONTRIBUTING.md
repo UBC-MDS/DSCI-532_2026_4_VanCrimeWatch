@@ -14,6 +14,7 @@ This project follows a Github Flow Workflow.
 - Each pull request must be reviewed and approved by at least one other team member before merging.
 
 ## Pull Request Discipline
+> added after discussion from M3 Retrospective & M4 Norms
 
 Keep PRs focused and reviewable:
 
@@ -178,3 +179,18 @@ VanCrimeWatch is released with a [Code of Conduct](https://github.com/UBC-MDS/DS
 ## Attribution and Code of Conduct
 
 The following was attributed from [AI_bias_in_farming](https://github.com/skysheng7/AI_bias_in_farming/blob/main/CONTRIBUTING.md). Please note that the VanCrimeWatch Dashboard is released with a [Code of Conduct](https://github.com/UBC-MDS/DSCI_532_2026_4_VanCrimeWatch/blob/main/CODE_OF_CONDUCT.md). By contributing to this project you agree to abide by its terms.
+
+### Appendix: M3 Retrospective & M4 Norms
+
+##### What worked in M3
+- Refactoring code into per-component files improved parallel development
+- Posit Cloud preview links helped with UI review
+
+#### What to improve for M4
+- PRs were too large — we will keep changes minimal and create separate PRs
+- Work was unevenly distributed and some members got disproportionate shares of documentation/code
+
+#### M4 Commitments
+- Each team member addresses at least one peer feedback item end-to-end
+- PRs targeting `dev` must be reviewed within 24 hours of opening. To achieve this PRs should be short and relevent and contain adequate description
+- Spec documents updated before writing code for any new feature. if there might be merge conflicts, the relevent information should be added in the PR description
