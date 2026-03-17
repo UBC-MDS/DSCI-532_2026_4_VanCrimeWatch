@@ -68,20 +68,11 @@ For Milestone 4, we implemented several new norms to directly address our M3 fee
 
 ### Reflection
 
-<!-- Standard (see General Guidelines): what the dashboard does well, current limitations,
-     any intentional deviations from DSCI 531 visualization best practices. -->
-
 Our dashboard currently provides a highly tailored and interactive experience for prospective business owners to assess crime risks. It successfully combines geospatial visualizations with a natural language AI query interface and MongoDB backend logging. By setting our default views to highlight business-relevant crimes in the most recent year, we provide users with an immediate, meaningful starting point rather than an overwhelming blank slate.
 
 A current technical limitation involves our database connection management. We temporarily removed the `session.on_ended(con.disconnect)` call to avoid app crashes and closures when multiple users are running the dashboard concurrently. Optimizing this database connection (e.g., implementing proper connection pooling) to handle scale safely is a priority for future enhancements. Additionally, we still need to implement the improvements we considered in Milestone 3, such as creating a static greeting for the LLM upon refresh to optimize token usage, and restructuring the size of our outputs in the AI tab to improve the visibility of all components and better align with DSCI 531 visualization best practices.
 
-<!-- Trade-offs: one sentence on feedback prioritization - full rationale is in #<issue> and ### Changed above. -->
-
 **Trade-offs:** We prioritized our peer feedback based on user experience; any issues that caused confusion or required clarification for using the dashboard were classified as critical and addressed first. Details of the feedback prioritization and full rationale can be found in [#86](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/86).
-
-<!-- Most useful: which lecture, material, or feedback shaped your work most this milestone,
-     and anything you wish had been covered. -->
-Most useful: The two main lectures that really drived the heart of this milestone were topics on **Databases in Shiny** learning lazy loading iwth the use of parquet + DuckDB + ibis and documenting the responses of a LLM which we applied to our implementation of LLM logging. 
 
 **Most useful:** The two main lectures that drove the heart of this milestone were the topics on **Databases in Shiny** (learning lazy loading with the use of parquet + DuckDB + ibis) and documenting the responses of an LLM, which we directly applied to our implementation of MongoDB logging. Given our current technical limitations, it would have been helpful to cover concurrent user handling within Shiny.
 
