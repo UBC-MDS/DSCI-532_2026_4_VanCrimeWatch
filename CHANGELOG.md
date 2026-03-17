@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added logs for LLM output [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
 - Added unit tests and Playwright UI tests [#99](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/99)
 - Implemented lazy loading via parquet + duckdb [#100](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/100)
+- Add analysis notebook for usage of llm logs [#111](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/111/changes)
 
 ### Changed
 
@@ -28,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addressed: Mobile responsiveness (non-critical feedback) [#102](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/102) via [#101](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/101)
 - Addressed: Implement meaningful message for missing data (critical feedback) [#92](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/92) via [#103](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/103)
 - Addressed: Implement better comparison for areas with least crime vs most crime (non-critical feedback) [#93](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/93) via [#104](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/104)
+- Addressed: Add label component for filters (non-critical feedback) [#107](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/107) via [#108](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/108)
+- Address: Update readme with better example walkthrough (non-critical feedback) [#96](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/96) via [#110](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/110)
+- Updated issue templates [#112](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/112)
 
 
 ### Fixed
