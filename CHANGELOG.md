@@ -45,12 +45,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Release Highlight: Persistent LLM Logging
 
-<!-- One short paragraph describing what you built and what it does for the user. -->
+We implemented a backend logging feature using MongoDB to capture user queries and LLM responses from our AI Explorer tab. This tool provides valuable information on how our target users interact with the data. By analyzing these logs, we can identify which neighborhoods, crime types, and timeframes are most frequently searched, while also detecting edge cases where the LLM fails or returns unexpected results. This data directly informs how we refine the LLM's 'extra_instructions' and improve our dashboard components to better serve our audience.
 
 - **Option chosen:** B 
 - **PR:** [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
-- **Why this option over the others:** <!-- 1–2 sentences; link to your feature prioritization issue -->
-- **Feature prioritization issue link:** #...
+- **Why this option over the others:** We prioritized this logging feature because understanding real user behavior and query patterns is critical for iteratively improving the AI Explorer's accuracy and tailoring the dashboard to our target audience's actual needs.
+- **Feature prioritization issue link:** [#94](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/94)
 
 ### Collaboration
 
