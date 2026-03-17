@@ -5,7 +5,7 @@ import pandas as pd
 import sys, os
 from dotenv import load_dotenv
 from querychat import QueryChat
-
+import ibis
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -27,19 +27,16 @@ else:
 
 appdir = Path(__file__).parent
 
-filename = f"combined_crime_data_2023_2025.csv"
-path = appdir.parent / "data" / "processed" / filename
-base_df = pd.read_csv(path)
+#replaced data loading with lazy loading: parquet + DuckDB
+parquet_path = str(appdir.parent / "data" / "processed" / "combined_crime_data_2023_2025.parquet")
+con = ibis.duckdb.connect()
+base_df = con.read_parquet(parquet_path)
 
-base_df["TYPE"] = base_df["TYPE"].replace(
-    {
-        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
-        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
-    }
-)
+base_df = base_df.mutate(
+    TYPE=base_df.TYPE.re_replace("Vehicle Collision or Pedestrian Struck.*", "Vehicle Collision or Pedestrian Struck"))
 
-neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
-crimetypes = base_df["TYPE"].unique().tolist()
+neighbourhoods = base_df.select("NEIGHBOURHOOD").distinct().execute()["NEIGHBOURHOOD"].dropna().tolist()
+crimetypes = base_df.select("TYPE").distinct().execute()["TYPE"].dropna().tolist()
 
 business_crime_types = [
     "Break and Enter Commercial",
@@ -51,7 +48,7 @@ business_crime_types = [
 
 
 qc = QueryChat(
-    base_df,
+    base_df.execute(),
     "vancouver_crime",
     client="anthropic/claude-haiku-4-5",
     #    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
@@ -241,6 +238,7 @@ app_ui = ui.page_navbar(
 
 
 def server(input, output, session):
+    session.on_ended(con.disconnect)
     qc_vals = qc.server()
 
     llm_logger(input, output, session, qc_vals)
@@ -320,6 +318,7 @@ def server(input, output, session):
             # Let the user know why their action was reversed
             ui.notification_show("Please select at least one year.", type="warning", duration=3)
 
+    @reactive.effect
     @reactive.event(input.clear_neighbourhood)
     def _():
         ui.update_selectize("input_neighbourhood", selected=[])

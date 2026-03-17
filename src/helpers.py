@@ -1,5 +1,6 @@
 from shiny import ui
 import pandas as pd
+import ibis
 
 
 extra_instructions = """
@@ -57,16 +58,25 @@ def get_card_header(header, icon="Hover"):
 def filter_crime_data(df: pd.DataFrame, years: list, crimes: list, neighbourhoods: list) -> pd.DataFrame:
     """Filters the crime dataframe based on selected years, crime types, and neighbourhoods."""
     
-    # If years is empty, return an empty dataframe immediately 
+    # If ibis table, use lazy filtering
+    if isinstance(df, ibis.expr.types.Table):
+        if not years:
+            return df.execute().iloc[0:0]
+        expr = df
+        expr = expr.filter(expr.YEAR.isin([int(y) for y in years]))
+        if crimes:
+            expr = expr.filter(expr.TYPE.isin(crimes))
+        if neighbourhoods:
+            expr = expr.filter(expr.NEIGHBOURHOOD.isin(neighbourhoods))
+        return expr.execute()
+    
+    # If pandas DataFrame (e.g. for unit tests), use pandas filtering
     if not years:
         return df.iloc[0:0]
-        
     filtered_df = df.copy()
     filtered_df = filtered_df[filtered_df["YEAR"].astype(str).isin(years)]
-
     if crimes:
         filtered_df = filtered_df[filtered_df["TYPE"].isin(crimes)]
     if neighbourhoods:
         filtered_df = filtered_df[filtered_df["NEIGHBOURHOOD"].isin(neighbourhoods)]
-        
     return filtered_df
