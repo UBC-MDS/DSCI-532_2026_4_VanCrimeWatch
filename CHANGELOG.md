@@ -67,6 +67,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
      and anything you wish had been covered. -->
 
 In your reflection, describe what each test covers and what could break if the behavior changes.
+#### Tests
+For this milestone, I refactored the core data-filtering logic out of the Shiny server into a testable Python function (`src/helpers.py`) and implemented a testing suite using `pytest` and `playwright`.
+
+1. Unit Tests (Logic)
+`test_filter_empty_years`
+
+- This test covers the edge case where a user deselects all years, passing an empty list to the filter function. It verifies that the function intercepts this and safely returns an empty dataframe.
+
+- What could break: If this logic is accidentally removed, the Pandas filter evaluates an empty list as False and bypasses the year filter entirely. This would result in the dashboard confusingly displaying all years of data when the user specifically asked for zero years.
+
+`test_filter_valid_conditions`
+
+- This tests covers the accuracy of the helper filter data function. It verifies that when valid years and crime types are provided, the function correctly applies the logic to return the exact matching rows.
+
+- What could break: If a future developer accidentally alters the Pandas logic, the charts would display wildly incorrect data, completely invalidating the user's analysis.
+
+2. UI Tests (Playwright)
+test_initial_dashboard_state
+
+What it covers: This acts as a baseline check, verifying that when the dashboard first loads, the UI components (like the year checkbox and time display radio buttons) correctly display their intended default parameters.
+
+What could break: If the default selected arguments are accidentally deleted from the app_ui layout code, the dashboard could load completely blank or with arbitrary choices, creating a confusing first impression.
+
+test_filter_changes_update_ui
+
+What it covers: This verifies the basic interactivity of the dashboard, ensuring that when a user clicks on different radio buttons or checkboxes, the UI successfully registers and holds those new states.
+
+What could break: If a Shiny update or a code typo breaks the input bindings in the UI, the filters might become "frozen" and unresponsive to user clicks, rendering the dashboard useless.
+
+test_reset_button_restores_defaults
+
+What it covers: This simulates a user changing the dashboard state and clicking the reset button. It verifies that the reset button's backend logic correctly communicates with the browser DOM to physically flip the toggles back to their original defaults.
+
+What could break: As the dashboard grows, if new inputs are added or IDs change, but the reset_filters() event isn't updated to match, the reset button will become partially or fully broken, leaving old filters applied.
+
+test_empty_year_warning
+
+What it covers: This verifies our custom reactive error handling. It ensures that when a user triggers an edge case (deselecting all years), the app actively forces the selection back to a safe default ("2025") and throws a visible .shiny-notification warning toast.
+
+What could break: If the _enforce_year_selection reactive effect is broken, deleted, or disconnected, the user will not receive any visual feedback as to why their charts suddenly disappeared or broke, leading to a frustrating user experience.
 
 ## [0.3.0] - Milestone 3 - 2026-03-08
 
