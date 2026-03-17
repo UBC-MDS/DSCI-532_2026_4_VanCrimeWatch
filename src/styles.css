@@ -134,3 +134,10 @@ body {
     left: 20px;
     right: auto;
 }
+
+.selection-summary {
+  padding: 0.5rem 0.75rem;
+  background: var(--bs-light);
+  border-radius: 0.375rem;
+  border: 1px solid var(--bs-border-color);
+}

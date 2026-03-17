@@ -70,3 +70,61 @@ def filter_crime_data(df: pd.DataFrame, years: list, crimes: list, neighbourhood
         filtered_df = filtered_df[filtered_df["NEIGHBOURHOOD"].isin(neighbourhoods)]
         
     return filtered_df
+
+
+def selection_summary_helper(output, input, crimetypes, neighbourhoods):
+    selected_crimes = list(input.input_crime_type()) or crimetypes
+    selected_neighbourhoods = list(input.input_neighbourhood()) or neighbourhoods
+    selected_years = list(input.input_year())
+
+    n_crimes = len(selected_crimes)
+    n_neighb = len(selected_neighbourhoods)
+
+    crime_list = ui.tags.ul(
+        *[ui.tags.li(c) for c in sorted(selected_crimes)],
+        style="margin:0; padding-left:1.2em; max-height:200px; overflow-y:auto;",
+    )
+    neighb_list = ui.tags.ul(
+        *[ui.tags.li(n) for n in sorted(selected_neighbourhoods)],
+        style="margin:0; padding-left:1.2em; max-height:200px; overflow-y:auto;",
+    )
+
+    crime_btn = ui.popover(
+        ui.tags.button(
+            ui.tags.span(str(n_crimes), class_="badge rounded-pill bg-primary me-1"),
+            " crime types ⏷",
+            class_="btn btn-sm rounded-pill btn-outline-primary",
+        ),
+        ui.div(ui.strong("Selected Crime Types"), crime_list, style="min-width:220px;"),
+        placement="bottom",
+        options={"trigger": "focus"},
+    )
+
+    neighb_btn = ui.popover(
+        ui.tags.button(
+            ui.tags.span(str(n_neighb), class_="badge bg-primary rounded-pill me-1"),
+            " neighbourhoods ⏷",
+            class_="btn btn-sm rounded-pill btn-outline-primary",
+        ),
+        ui.div(ui.strong("Selected Neighbourhoods"), neighb_list, style="min-width:220px;"),
+        placement="bottom",
+        options={"trigger": "focus"},
+    )
+
+    year_badges = ui.span(
+        *[
+            ui.tags.span(y, class_="badge bg-secondary me-1")
+            for y in sorted(selected_years)
+        ]
+    )
+
+    return ui.div(
+        "Currently showing statistics and data for ",
+        crime_btn,
+        " from ",
+        neighb_btn,
+        " for selected year(s) ",
+        year_badges,
+        class_="selection-summary d-flex align-items-center flex-wrap gap-1 mb-2",
+        style="font-size:0.9rem;",
+    )

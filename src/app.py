@@ -124,6 +124,7 @@ dashboard_tab = ui.nav_panel(
             title="Dashboard Filters",
             open="desktop",
         ),
+        ui.output_ui("selection_summary"),
         # card for KPIs
         kpi_card_widget(),
         # map widget
@@ -291,6 +292,10 @@ def server(input, output, session):
         return df
 
     render_kpis(output, input, filtered_data)
+    
+    @render.ui
+    def selection_summary():
+        return selection_summary_helper(output, input, crimetypes, neighbourhoods)
 
     @reactive.effect
     @reactive.event(input.reset_btn)
