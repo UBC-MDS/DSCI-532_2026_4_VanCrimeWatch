@@ -18,6 +18,8 @@ dependencies:
   - pyproj
   - pymongo
   - markdown
+  - ibis-framework
+  - duckdb
   - pip:
     - querychat
     - chatlas

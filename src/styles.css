@@ -10,8 +10,8 @@ body {
 
 /* Increase font size for navbar tab titles */
 .navbar-nav .nav-link {
-    font-size: 1.1rem;
-    font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .bslib-value-box .plotly .modebar-container {
@@ -69,20 +69,20 @@ body {
 }
 
 [data-bs-theme="dark"] .shiny-data-grid thead th {
-    background-color: #1e1e2e !important;
-    color: #ffffff !important;
+  background-color: #1e1e2e !important;
+  color: #ffffff !important;
 }
 
 [data-bs-theme="dark"] .shiny-data-grid tbody tr.selected,
 [data-bs-theme="dark"] .shiny-data-grid tbody tr:focus,
 [data-bs-theme="dark"] .shiny-data-grid tbody tr[aria-selected="true"] {
-    background-color: #3a3a5c !important;
-    color: #ffffff !important;
+  background-color: #3a3a5c !important;
+  color: #ffffff !important;
 }
 
 [data-bs-theme="dark"] .shiny-data-grid tbody tr:hover {
-    background-color: #2a2a3e !important;
-    color: #ffffff !important;
+  background-color: #2a2a3e !important;
+  color: #ffffff !important;
 }
 
 .tab-pane:nth-child(2) .bslib-sidebar-layout>.sidebar {
@@ -93,6 +93,14 @@ body {
 .tab-pane:nth-child(2) .bslib-sidebar-layout>.main {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
+}
+
+@media (max-width: 767px) {
+
+  .tab-pane:nth-child(2) .bslib-sidebar-layout>.sidebar,
+  .tab-pane:nth-child(2) .bslib-sidebar-layout>.main {
+    max-height: none;
+  }
 }
 
 /* fixed height within sidebar */
@@ -130,9 +138,9 @@ body {
 
 /* Move Shiny notifications to the bottom left */
 #shiny-notification-panel {
-    bottom: 20px;
-    left: 20px;
-    right: auto;
+  bottom: 20px;
+  left: 20px;
+  right: auto;
 }
 
 .selection-summary {
