@@ -261,6 +261,10 @@ def server(input, output, session):
     def ai_donut_plot():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
+        if df.empty:
+            return ui.p("No data found for your query. The crime type you are searching for has no records or does not exist, " \
+                        "Try rephrasing or broadening your search.",
+                    style="color: #6c757d; text-align: center; padding: 40px;")
         fig = _make_donut_plot(df, input, compact=True)
         return ui.HTML(
             fig.to_html(
@@ -329,6 +333,10 @@ def server(input, output, session):
     def ai_timeline_chart():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
+        if df.empty:
+            return ui.p("No data found for your query. Only data from the years 2023, 2024 and 2025 exist in our records." \
+                        " Try rephrasing or broadening your search.",
+                    style="color: #6c757d; text-align: center; padding: 40px;")
         fig = _make_timeline_chart(df, input, compact=True)
         return ui.HTML(
             fig.to_html(
