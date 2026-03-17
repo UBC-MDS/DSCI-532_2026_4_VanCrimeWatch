@@ -142,3 +142,41 @@ body {
   left: 20px;
   right: auto;
 }
+
+.selection-summary {
+  padding: 0.5rem 0.75rem;
+  background: var(--bs-light);
+  border-radius: 0.375rem;
+  border: 1px solid var(--bs-border-color);
+}
+
+[data-bs-theme="dark"] .selection-summary {
+  background: var(--bs-dark);
+  border-color: var(--bs-border-color);
+  color: var(--bs-light);
+}
+
+[data-bs-theme="dark"] .btn-outline-primary {
+  color: var(--bs-primary-text-emphasis);
+  border-color: var(--bs-primary-text-emphasis);
+}
+
+[data-bs-theme="dark"] .popover {
+  background-color: var(--bs-dark);
+  border-color: var(--bs-border-color);
+  color: var(--bs-light);
+}
+
+[data-bs-theme="dark"] .popover .popover-header {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-light);
+  border-color: var(--bs-border-color);
+}
+
+[data-bs-theme="dark"] .popover .popover-body {
+  color: var(--bs-light);
+}
+
+[data-bs-theme="dark"] .popover .popover-arrow::after {
+  border-bottom-color: var(--bs-border-color);
+}
