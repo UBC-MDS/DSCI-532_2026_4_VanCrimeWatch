@@ -41,10 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Known Issues
 
-- Due to the sizing on the device, may need to zoom out (ie. 75%) to see the all the feature details on the dashboard. 
-
-### Known Issues
-
 - **Dashboard Scaling:** Depending on the device's screen size and resolution, users may need to zoom out their browser window (e.g., to 75%) to comfortably view all feature details and outputs on the dashboard simultaneously.
 
 ### Release Highlight: Persistent LLM Logging
