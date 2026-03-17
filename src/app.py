@@ -279,21 +279,14 @@ def server(input, output, session):
 
     @reactive.calc
     def filtered_data():
-        selected_years = [int(y) for y in input.input_year()]
-        selected_crimes = list(input.input_crime_type())
-        selected_neighbourhoods = list(input.input_neighbourhood())
+        df = filter_crime_data(
+            df=base_df,
+            years=list(input.input_year()),
+            crimes=list(input.input_crime_type()),
+            neighbourhoods=list(input.input_neighbourhood())
+        )
 
-        if not selected_years:
-            selected_years = [2025]
-
-        expr = base_df
-        if selected_years:
-            expr = expr.filter(expr.YEAR.isin(selected_years))
-        if selected_crimes:
-            expr = expr.filter(expr.TYPE.isin(selected_crimes))
-        if selected_neighbourhoods:
-            expr = expr.filter(expr.NEIGHBOURHOOD.isin(selected_neighbourhoods))
-        return expr.execute()
+        return df
 
     render_kpis(output, input, filtered_data)
 

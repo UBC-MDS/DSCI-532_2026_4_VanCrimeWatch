@@ -88,6 +88,27 @@ shiny run src/app.py --reload
 http://127.0.0.1:8000
 ```
 
+## Testing
+
+This dashboard includes both unit tests (Pytest) for the core data-filtering logic and Playwright UI tests for the dashboard interface. 
+
+To run the entire test suite locally:
+
+1. Ensure your conda environment is activated 
+```bash
+conda activate vancrimewatch
+```
+
+2. Ensure the Playwright browsers are installed 
+```bash
+playwright install
+```
+
+To run all tests from the root directory:
+```bash
+pytest tests/
+```
+
 ## Contributing
 
 Interested in contributing? Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started, our code of conduct, and the process for submitting pull requests.
