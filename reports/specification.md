@@ -74,8 +74,10 @@ The application is organised into three tabs:
 | `map` | `@render_widget` (ipyleaflet) | `filtered_data` | Bubble map with circle markers sized by crime count per neighbourhood. Popup shows neighbourhood name and total. | #1, #3 |
 | `donut_plot` | `@render.ui` (Plotly `to_html`) | `filtered_data` | Donut chart showing crime type distribution with percentage labels and central total count. Responsive, no fixed width. | #2 |
 | `timeline_chart` | `@render.ui` (Plotly `to_html`) | `filtered_data`, `time_display` | Line chart of crime counts aggregated by month, day-of-week, or hour. One line per selected year. Responsive. | #4 |
+| `selection_summary` | `@render.ui` | `input_*` elements directly | Dynamic label displaying the actively selected neighbourhoods, crime types, and years using popover lists. | #1 - #4 |
 | `metrics_row` | `@render.ui` | `filtered_data` | Year-over-year crime totals with percentage change badges (green = decrease, yellow = <5% increase, red = >5% increase). | #1 - #4 |
 | `safest_block` | `@render.ui` | `filtered_data` | Displays the neighbourhood with the lowest crime count and its share of total. | #1 |
+| `unsafe_block` | `@render.ui` | `filtered_data` | Displays the neighbourhood with the highest crime count and its share of total ("Most Crime"). | #1 |
 | `peak_crime_period` | `@render.ui` | `filtered_data`, `time_display` | Shows the peak crime period (month name, weekday, or hour range) based on the selected aggregation. | #4 |
 
 ### 4.2 AI Explorer Tab
@@ -92,8 +94,8 @@ The application is organised into three tabs:
 | ID | Renderer | Data Source | Description |
 |---|---|---|---|
 | `ai_map` | `@render_widget` (ipyleaflet) | `qc_vals.df()` | Same bubble map as Dashboard, but driven by AI-filtered data. |
-| `ai_donut_plot` | `@render.ui` (Plotly `to_html`) | `qc_vals.df()` | Compact donut chart of AI-filtered crime types. |
-| `ai_timeline_chart` | `@render.ui` (Plotly `to_html`) | `qc_vals.df()` | Compact timeline chart of AI-filtered data. |
+| `ai_donut_plot` | `@render.ui` (Plotly `to_html`) | `qc_vals.df()` | Compact donut chart of AI-filtered crime types. Displays a "No data found" message if the filtered slice is empty. |
+| `ai_timeline_chart` | `@render.ui` (Plotly `to_html`) | `qc_vals.df()` | Compact timeline chart of AI-filtered data. Displays a "No data found" message if the filtered slice is empty. |
 | `ai_data_table` | `@render.data_frame` | `qc_vals.df()` | Scrollable data table showing the raw AI-filtered records. |
 
 ### 4.3 My Chat History Tab
@@ -127,15 +129,19 @@ flowchart TD
         MAP([map])
         DONUT([donut_plot])
         TIMELINE([timeline_chart])
+        SUMMARY([selection_summary])
         KPI_ROW([metrics_row])
         KPI_SAFE([safest_block])
+        KPI_UNSAFE([unsafe_block])
         KPI_PEAK([peak_crime_period])
 
         FD --> MAP
         FD --> DONUT
         FD --> TIMELINE
+        NS & CS & YR --> SUMMARY
         FD --> KPI_ROW
         FD --> KPI_SAFE
+        FD --> KPI_UNSAFE
         FD --> KPI_PEAK
         TD --> TIMELINE
         TD --> KPI_PEAK
@@ -191,8 +197,10 @@ The central reactive computation for the Dashboard tab. All Dashboard outputs de
 - `map` -- circle markers sized by neighbourhood crime count
 - `donut_plot` -- crime type distribution
 - `timeline_chart` -- temporal line chart (aggregation controlled by `time_display`)
+- `selection_summary` -- dynamic text summary of active filters
 - `metrics_row` -- year-over-year totals with trend badges
 - `safest_block` -- neighbourhood with lowest count
+- `unsafe_block` -- neighbourhood with highest count
 - `peak_crime_period` -- peak time period (aggregation follows `time_display`)
 
 ### 6.2 `qc_vals.df()` (AI Explorer)
@@ -228,7 +236,7 @@ CSV (raw) --> prep_data_parquet.py --> Parquet file
                                     .execute() --> pandas DataFrame
 ```
 
-Parquet + DuckDB enables columnar compression and lazy evaluation. Only the rows/columns needed for a given filter combination are materialised in memory. The DuckDB connection is cleaned up when the user session ends via `session.on_ended(con.disconnect)`.
+Parquet + DuckDB enables columnar compression and lazy evaluation. Only the rows/columns needed for a given filter combination are materialised in memory. The DuckDB connection remains open as a shared connection across all sessions (closing it per-session would inadvertently disconnect all active users).
 
 ### 7.2 Chart Rendering
 
