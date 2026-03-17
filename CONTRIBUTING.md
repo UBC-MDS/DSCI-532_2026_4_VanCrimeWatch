@@ -70,6 +70,17 @@ you'll be working on that, too. If another enhancement catches your fancy, but i
 doesn't have the `help wanted` label, just post a comment, the maintainers are usually
 happy for any support that they can get.
 
+## Proposing New Features
+
+Before implementing new features, open an issue on GitHub to propose it first. A good feature proposal should include:
+
+- **What** — a clear description of the feature and the problem it solves
+- **Why** — how it fits the dashboard's purpose (helping business owners assess Vancouver crime risk)
+- **Scope** — a rough sense of what files/components will be touched
+- **Alternatives considered** — any other approaches you evaluated
+
+Wait for maintainer feedback before opening a PR. This helps avoid clashes and duplicate work and keeps the project focused.
+
 ### Write Documentation
 
 VanCrimeWatch could always use more documentation, whether as
@@ -77,6 +88,27 @@ part of the official documentation, in docstrings, or even on the web in blog
 posts, articles, and such. Just
 [open an issue](https://github.com/UBC-MDS/DSCI_532_2026_4_VanCrimeWatch/issues)
 to let us know what you will be working on so that we can provide you with guidance.
+
+## Writing Tests
+
+If new edge cases are found, users can contribute new tests for the project. Tests live in `tests/`. There are two types:
+
+- **Logic (Unit) tests (Pytest)** — cover core data-filtering and business logic in `src/`
+- **UI tests (Playwright)** — cover dashboard interactions and component rendering
+
+When writing tests:
+
+- Each test should target a single, specific behaviour
+- Use descriptive test names that explain what is being verified (e.g. `test_filter_empty_years`)
+- If your change touches filtering logic, a unit test is expected
+- If your change touches a UI component, consider adding or updating a Playwright test
+
+Run the full suite before opening a PR:
+```bash
+conda activate vancrimewatch
+playwright install  # only needed once
+pytest tests/
+```
 
 ### Submit Feedback
 
