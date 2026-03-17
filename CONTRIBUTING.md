@@ -9,20 +9,42 @@ This project follows a Github Flow Workflow.
 
 - The main branch always contains stable, production-ready code
 - Direct commits to the 'main' branch are prohibited.
-- All work should be conducted on short-lived branches created from 'main'.
-- Branches should be named using appropriate prefixes such as 'feat-' or 'fix-'.
-- Changes must be proposed via pull request to the main branch.
-- Each Pull request must be reviewed by at least one other team member and granted approval before merging. 
+- All work should be based off and merged into the `dev` branch via pull request.
+- Branches should be named with appropriate prefixes: `feat-` or `fix-`.
+- Each pull request must be reviewed and approved by at least one other team member before merging.
 
-## Example Contributions
+## Pull Request Discipline
 
-You can contribute in many ways, for example:
+Keep PRs focused and reviewable:
 
-* [Report bugs](#report-bugs)
-* [Fix Bugs](#fix-bugs)
-* [Implement Features](#implement-features)
-* [Write Documentation](#write-documentation)
-* [Submit Feedback](#submit-feedback)
+- Each PR should address a **single, specific problem or feature**. 
+- Avoid large PRs and keep line count changes small and scoped. Larger fixes can be broken into smaller PRs to make testing and review smoother.
+- New features **must** include:
+  - A small update to the relevant **specification** in `reports/`
+  - Updated and documented **Tests** (if applicable)
+- For significant UI changes, include a Posit Cloud preview link in the PR description to speed up review.
+
+## Analysis and Testing
+
+- Exploratory analysis and notebook-based testing should be placed in `reports/` as Jupyter notebooks.
+- Unit tests (Pytest) live in `tests/` and should cover core data-filtering logic.
+- UI tests use Playwright. Run the full suite with:
+
+```bash
+conda activate vancrimewatch
+playwright install
+pytest tests/
+```
+
+## LLM / AI Features
+
+The AI Explorer tab uses the Anthropic API and incurs token costs and retrieves LLM outputs. When contributing to AI-related features:
+
+- **Caution of use of LLMs** -  Please be mindful of unpredictable LLM behaviour
+- **Do not log or expose sensitive user queries.** Be mindful of what gets sent to the API. Take care that the database is correctly set up with appropriate security.
+- Test AI-related changes locally using your own `.env` API key (see setup below). Do not commit API keys.
+
+## Types of Contributions
 
 ### Report Bugs
 
@@ -65,9 +87,9 @@ project and everybody has limited time.
 
 ## Get Started
 
-To make changes to our dashboard, first fork and then clone the repository:
+Fork and clone the repository:
 
-```shell
+```bash
 git clone git@github.com:your_github_username/DSCI_532_2026_4_VanCrimeWatch.git
 cd DSCI_532_2026_4_VanCrimeWatch
 ```
@@ -79,13 +101,22 @@ conda env create -f environment.yml
 conda activate vancrimewatch
 ```
 
-### Create a New Branch
+### Configure Environment Variables
 
-Create a branch for local development using the default branch (typically `main`) as a starting point. Use `fix` or `feat` as a prefix for your branch name.
+Create a `.env` file in the project root:
 
-```shell
-git checkout main
-git checkout -b fix-name-of-your-bugfix
+```
+ANTHROPIC_API_KEY=your_api_key_here
+PYMONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/?appName=<cluster>
+```
+
+### Create a Branch
+
+Branch off `dev`, use `fix` or `feat` as a prefix for your branch name.
+
+```bash
+git checkout dev
+git checkout -b feat-name-of-your-feature
 ```
 
 Now you can make your changes locally.
@@ -93,23 +124,23 @@ Now you can make your changes locally.
 Commit your changes and push your branch to GitHub. Please use [semantic
    commit messages](https://www.conventionalcommits.org/).
 
-```shell
+```bash
 git add .
-git commit -m "fix: summarize your changes"
-git push -u origin fix-name-of-your-bugfix
+git commit -m "feat: summarize your changes"
+git push -u origin feat-name-of-your-feature
 ```
 
-Open the link displayed in the message when pushing your new branch in order
-to submit a pull request.
+Then open a pull request **targeting `dev`**.
 
-### Running the Dashboard Locally
+### Run the Dashboard Locally
 
 ```bash
-cd DSCI_532_2026_4_VanCrimeWatch
-conda activate vancrimewatch
-
 shiny run src/app.py --reload
 ```
+
+## Code of Conduct
+
+VanCrimeWatch is released with a [Code of Conduct](https://github.com/UBC-MDS/DSCI_532_2026_4_VanCrimeWatch/blob/main/CODE_OF_CONDUCT.md). By contributing, you agree to abide by its terms.
 
 ## Attribution and Code of Conduct
 
