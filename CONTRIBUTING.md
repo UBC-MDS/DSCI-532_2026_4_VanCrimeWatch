@@ -23,6 +23,7 @@ Keep PRs focused and reviewable:
   - A small update to the relevant **specification** in `reports/`
   - Updated and documented **Tests** (if applicable)
 - For significant UI changes, include a Posit Cloud preview link in the PR description to speed up review.
+- Please modularize large and related blocks of code into separate `.py` files to keep main `app.py` clean.
 
 ## Analysis and Testing
 
