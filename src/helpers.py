@@ -1,4 +1,5 @@
 from shiny import ui
+import pandas as pd
 
 
 extra_instructions = """
@@ -52,3 +53,20 @@ def get_card_header(header, icon="Hover"):
             style="display:flex; align-items:center; width:100%;",
         ),
     )
+
+def filter_crime_data(df: pd.DataFrame, years: list, crimes: list, neighbourhoods: list) -> pd.DataFrame:
+    """Filters the crime dataframe based on selected years, crime types, and neighbourhoods."""
+    
+    # If years is empty, return an empty dataframe immediately 
+    if not years:
+        return df.iloc[0:0]
+        
+    filtered_df = df.copy()
+    filtered_df = filtered_df[filtered_df["YEAR"].astype(str).isin(years)]
+
+    if crimes:
+        filtered_df = filtered_df[filtered_df["TYPE"].isin(crimes)]
+    if neighbourhoods:
+        filtered_df = filtered_df[filtered_df["NEIGHBOURHOOD"].isin(neighbourhoods)]
+        
+    return filtered_df
