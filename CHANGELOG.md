@@ -5,9 +5,115 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
 
-- Upcoming features and fixes
+## [0.4.0] - Milestone 4 - 2026-03-17
+
+### Added
+
+- Added logs for LLM output [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
+- Added unit tests and Playwright UI tests [#99](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/99)
+- Implemented lazy loading via parquet + duckdb [#100](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/100)
+- Add analysis notebook for usage of llm logs [#111](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/111/changes)
+
+### Changed
+
+- Updated README with mongo URI instructions [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
+- Addressed: Enhance input selection box (non-critical feedback) [#90](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/90) via [#91](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/91)
+- Addressed: Year selector component (critical feedback) [#88](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/88) via [#97](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/97) 
+- Addressed: Irregular font sizes (non-critical feedback) [#87](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/87) via [#98](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/98)
+- Refactored filter data function [#99](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/99)
+- Updated README with instructions to run tests [#99](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/99)
+- Addressed: Mobile responsiveness (non-critical feedback) [#102](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/102) via [#101](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/101)
+- Addressed: Implement meaningful message for missing data (critical feedback) [#92](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/92) via [#103](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/103)
+- Addressed: Implement better comparison for areas with least crime vs most crime (non-critical feedback) [#93](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/93) via [#104](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/104)
+- Addressed: Add label component for filters (non-critical feedback) [#107](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/107) via [#108](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/108)
+- Address: Update readme with better example walkthrough (non-critical feedback) [#96](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/96) via [#110](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/110)
+- Updated issue templates [#112](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/112)
+- Updated `m2_spec.md` to `specification.md` with latest features [#105](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/105)
+
+
+
+### Fixed
+
+- Fixed input selection box for issue [#90](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/90)
+- **Feedback prioritization issue link:** [#86](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/86)
+
+### Known Issues
+
+- **Dashboard Scaling:** Depending on the device's screen size and resolution, users may need to zoom out their browser window (e.g., to 75%) to comfortably view all feature details and outputs on the dashboard simultaneously.
+
+### Release Highlight: Persistent LLM Logging
+
+We implemented a backend logging feature using MongoDB to capture user queries and LLM responses from our AI Explorer tab. This tool provides valuable information on how our target users interact with the data. By analyzing these logs, we can identify which neighborhoods, crime types, and timeframes are most frequently searched, while also detecting edge cases where the LLM fails or returns unexpected results. This data directly informs how we refine the LLM's 'extra_instructions' and improve our dashboard components to better serve our audience.
+
+- **Option chosen:** B 
+- **PR:** [#89](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/89)
+- **Why this option over the others:** We prioritized this logging feature because understanding real user behavior and query patterns is critical for iteratively improving the AI Explorer's accuracy and tailoring the dashboard to our target audience's actual needs.
+- **Feature prioritization issue link:** [#94](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/94)
+
+### Collaboration
+
+For this milestone, our team heavily refined our collaboration strategies based on our M3 retrospective to ensure a smoother, more equitable development process. We codified these new norms directly into our `CONTRIBUTING.md` file.
+
+- **CONTRIBUTING.md:** Update via PR [#106](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/106) documenting M3 retrospaective and M4 collaboration norms.
+- **M3 retrospective:** 
+During our M3 retrospective, we realized that our pull requests had become too large, which made testing, code review, and documentation a little messy. We also acknowledged that the workload was unevenly distributed, with some members taking on disproportionate amounts of coding and documentation. On the positive side, we found that refactoring code into separate files greatly improved our parallel workflow.
+- **M4:** 
+For Milestone 4, we implemented several new norms to directly address our M3 feedback. We committed to making smaller, single-issue PRs and required them to be reviewed by at least 2 team members within 24 hours. To balance the workload, every team member took responsibility for addressing at least one peer feedback item end-to-end, and distributed the coding and documentation workload evenly. Finally, we mandated that feature specifications must be updated before writing code for documentation.
+
+### Reflection
+
+Our dashboard currently provides a highly tailored and interactive experience for prospective business owners to assess crime risks. It successfully combines geospatial visualizations with a natural language AI query interface and MongoDB backend logging. By setting our default views to highlight business-relevant crimes in the most recent year, we provide users with an immediate, meaningful starting point rather than an overwhelming blank slate.
+
+A current technical limitation involves our database connection management. We temporarily removed the `session.on_ended(con.disconnect)` call to avoid app crashes and closures when multiple users are running the dashboard concurrently. Optimizing this database connection (e.g., implementing proper connection pooling) to handle scale safely is a priority for future enhancements. Additionally, we still need to implement the improvements we considered in Milestone 3, such as creating a static greeting for the LLM upon refresh to optimize token usage, and restructuring the size of our outputs in the AI tab to improve the visibility of all components and better align with DSCI 531 visualization best practices.
+
+**Trade-offs:** We prioritized our peer feedback based on user experience; any issues that caused confusion or required clarification for using the dashboard were classified as critical and addressed first. Details of the feedback prioritization and full rationale can be found in [#86](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/86).
+
+**Most useful:** The two main lectures that drove the heart of this milestone were the topics on **Databases in Shiny** (learning lazy loading with the use of parquet + DuckDB + ibis) and documenting the responses of an LLM, which we directly applied to our implementation of MongoDB logging. Given our current technical limitations, it would have been helpful to cover concurrent user handling within Shiny.
+
+#### Tests
+
+For this milestone, we refactored the core data-filtering logic out of the Shiny server into a testable Python function (`src/helpers.py`) and implemented a testing suite using `pytest` and `playwright`.
+
+1. Unit Tests (Logic)
+
+`test_filter_empty_years`
+
+- This test covers the edge case where a user deselects all years, passing an empty list to the filter function. It verifies that the function intercepts this and safely returns an empty dataframe.
+
+- What could break: If this logic is accidentally removed, the Pandas filter evaluates an empty list as False and bypasses the year filter entirely. This would result in the dashboard confusingly displaying all years of data when the user specifically asked for zero years.
+
+`test_filter_valid_conditions`
+
+- This tests covers the accuracy of the helper filter data function. It verifies that when valid years and crime types are provided, the function correctly applies the logic to return the exact matching rows.
+
+- What could break: If a future developer accidentally alters the Pandas logic, the charts would display wildly incorrect data, completely invalidating the user's analysis.
+
+2. UI Tests (Playwright)
+
+`test_initial_dashboard_state`
+
+- This test acts as a baseline check, verifying that when the dashboard first loads, the UI components (like the year checkbox and time display radio buttons) correctly display their intended default parameters.
+
+- What could break: If the default selected arguments are accidentally deleted from the app_ui layout code, the dashboard could load completely blank or with arbitrary choices, creating a confusing first impression.
+
+`test_filter_changes_update_ui`
+
+- This test verifies the basic interactivity of the dashboard, ensuring that when a user clicks on different radio buttons or checkboxes, the UI successfully registers and holds those new states.
+
+- What could break: If a Shiny update or a code typo breaks the input bindings in the UI, the filters might become "frozen" and unresponsive to user clicks, rendering the dashboard useless.
+
+`test_reset_button_restores_defaults`
+
+- This test simulates a user changing the dashboard state and clicking the reset button. It verifies that the reset button's logic is correct to be able to physically flip the toggles back to their original defaults.
+
+- What could break: As the dashboard grows, if new inputs are added or IDs change, but the `reset_filters()` function isn't updated to match, the reset button will become partially or fully broken, leaving old filters applied.
+
+`test_empty_year_warning`
+
+- This test verifies our custom reactive error handling. It ensures that when a user triggers an edge case (deselecting all years), the app actively forces the selection back to a safe default ("2025") and throws a visible warning on the screen.
+
+- What could break: If the `_enforce_year_selection` reactive effect is broken, deleted, or disconnected, the user will not receive any visual feedback as to why their charts suddenly disappeared or broke, leading to a frustrating user experience.
 
 ## [0.3.0] - Milestone 3 - 2026-03-08
 
@@ -25,7 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addressed instructor's [HARD](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/issues/62) improvement, changed default options to be more user specific [#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
 - Addressed TA improvement: Increased legend font size in donut chart + added percentage and hover labels for better user-guidance[#72](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72)
 - Changed donut chart from altair to plotly to address display issues + accomodate additional features from TA feedback [20da210](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/72/changes/20da210f9a486be9f2b1aabd066c17f862cbd777)
-- Refactored code into separate files, one per output compoent [ade132a](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/ade132a7ba5a55a703b92fba9d600e958cf4e1b9)
+- Refactored code into separate files, one per output component [ade132a](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/71/changes/ade132a7ba5a55a703b92fba9d600e958cf4e1b9)
 - Updated dashbaord demo in readme to reflect new additions [#73](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/73)
 - Updated AI-chat related dependencies [35f5d16](https://github.com/UBC-MDS/DSCI-532_2026_4_VanCrimeWatch/pull/67/changes/35f5d16e90eed83c30f7df19360535ddc9d99115)
 

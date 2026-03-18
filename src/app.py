@@ -2,9 +2,10 @@ from shiny import App, ui, reactive, render
 from shinywidgets import output_widget, render_widget
 from pathlib import Path
 import pandas as pd
-import sys
+import sys, os
 from dotenv import load_dotenv
 from querychat import QueryChat
+import ibis
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -15,21 +16,27 @@ if __package__ and __package__ != "__main__":
     from src.map_render import _make_map
     from src.timeline_chart import _make_timeline_chart
     from src.helpers import *
+    from src.llm_logger import COOKIE_JS, history_tab, llm_logger
 else:
     from kpi_cards import *
     from donut_chart import _make_donut_plot
     from map_render import _make_map
     from timeline_chart import _make_timeline_chart
     from helpers import *
+    from llm_logger import COOKIE_JS, history_tab, llm_logger
 
 appdir = Path(__file__).parent
 
-filename = f"combined_crime_data_2023_2025.csv"
-path = appdir.parent / "data" / "processed" / filename
-base_df = pd.read_csv(path)
+#replaced data loading with lazy loading: parquet + DuckDB
+parquet_path = str(appdir.parent / "data" / "processed" / "combined_crime_data_2023_2025.parquet")
+con = ibis.duckdb.connect()
+base_df = con.read_parquet(parquet_path)
 
-neighbourhoods = base_df["NEIGHBOURHOOD"].unique().tolist()
-crimetypes = base_df["TYPE"].unique().tolist()
+base_df = base_df.mutate(
+    TYPE=base_df.TYPE.re_replace("Vehicle Collision or Pedestrian Struck.*", "Vehicle Collision or Pedestrian Struck"))
+
+neighbourhoods = base_df.select("NEIGHBOURHOOD").distinct().execute()["NEIGHBOURHOOD"].dropna().tolist()
+crimetypes = base_df.select("TYPE").distinct().execute()["TYPE"].dropna().tolist()
 
 business_crime_types = [
     "Break and Enter Commercial",
@@ -39,49 +46,57 @@ business_crime_types = [
     "Theft of Vehicle",
 ]
 
-base_df["TYPE"] = base_df["TYPE"].replace(
-    {
-        "Vehicle Collision or Pedestrian Struck (with Fatality)": "Vehicle Collision or Pedestrian Struck",
-        "Vehicle Collision or Pedestrian Struck (with Injury)": "Vehicle Collision or Pedestrian Struck",
-    }
-)
-
 
 qc = QueryChat(
-    base_df,
+    base_df.execute(),
     "vancouver_crime",
     client="anthropic/claude-haiku-4-5",
     #    greeting="Welcome to the Vancouver Crime Data Explorer. Ask me anything about crime data from 2023-2025, such as 'top 5 crime types' or 'crimes in Downtown'.",
     extra_instructions=extra_instructions,
 )
 
+
 dashboard_tab = ui.nav_panel(
     "Dashboard",
+    COOKIE_JS,
     ui.layout_sidebar(
         ui.sidebar(
             ui.div(
+            ui.input_selectize(
+                id="input_neighbourhood",
+                label="Select Neighbourhoods:",
+                choices=neighbourhoods,
+                multiple=True,
+                selected=[
+                    "Central Business District",
+                    "West End",
+                ],
+                options={
+                    "placeholder": "Displaying All",
+                },
+            ),
+            ui.input_action_button(
+                id="clear_neighbourhood",
+                label="✕ Clear Selection",
+                class_="btn btn-sm btn-outline-secondary mt-1 d-block mx-auto",
+            ),
+        ),
+            ui.div(
                 ui.input_selectize(
-                    id="input_neighbourhood",
-                    label="Select Neighbourhoods:",
-                    choices=neighbourhoods,
+                    id="input_crime_type",
+                    label="Select Crime Types:",
+                    choices=crimetypes,
                     multiple=True,
-                    selected=[
-                        "Central Business District",
-                        "West End",
-                    ],  # default selects popular neighbourhoods
+                    selected=business_crime_types,
                     options={
                         "placeholder": "Displaying All",
-                        "plugins": ["clear_button"],
                     },
-                )
-            ),
-            ui.input_selectize(
-                id="input_crime_type",
-                label="Select Crime Types:",
-                choices=crimetypes,
-                multiple=True,
-                selected=business_crime_types,  # default selects common business crime types
-                options={"placeholder": "Displaying All", "plugins": ["clear_button"]},
+                ),
+                ui.input_action_button(
+                    id="clear_crime_type",
+                    label="✕ Clear Selection",
+                    class_="btn btn-sm btn-outline-secondary mt-1 d-block mx-auto",
+                ),
             ),
             ui.p("TIMELINE"),
             ui.input_radio_buttons(
@@ -106,6 +121,7 @@ dashboard_tab = ui.nav_panel(
             title="Dashboard Filters",
             open="desktop",
         ),
+        ui.output_ui("selection_summary"),
         # card for KPIs
         kpi_card_widget(),
         # map widget
@@ -116,11 +132,11 @@ dashboard_tab = ui.nav_panel(
         ui.layout_columns(
             ui.card(
                 get_card_header("Types of Crime", icon="Hover"),
-                output_widget("donut_plot"),
+                ui.output_ui("donut_plot"),
             ),
             ui.card(
                 get_card_header("Crime Timeline", icon="Hover"),
-                output_widget("timeline_chart"),
+                ui.output_ui("timeline_chart"),
             ),
         ),
         fillable_mobile=True,
@@ -201,6 +217,7 @@ ai_tab = ui.nav_panel(
 app_ui = ui.page_navbar(
     dashboard_tab,
     ai_tab,
+    history_tab,
     ui.nav_spacer(),
     ui.nav_control(
         ui.input_dark_mode(id="mode", mode="light"),
@@ -209,7 +226,10 @@ app_ui = ui.page_navbar(
         ui.h1("VanCrimeWatch", class_="mb-0 fs-4 text-white"),
         class_="d-flex align-items-center",
     ),
-    header=ui.include_css(appdir.parent / "src" / "styles.css"),
+    header=ui.TagList(
+        ui.include_css(appdir.parent / "src" / "styles.css"),
+        ui.tags.script(src="https://cdn.plot.ly/plotly-2.35.2.min.js"),
+    ),
     navbar_options=ui.navbar_options(
         theme="dark",
         class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
@@ -219,11 +239,10 @@ app_ui = ui.page_navbar(
 
 
 def server(input, output, session):
+    #session.on_ended(con.disconnect)
     qc_vals = qc.server()
 
-    # Helper to get pandas df from querychat:
-    #   df = qc_vals.df()
-    #   df = df.to_native() if hasattr(df, "to_native") else df
+    llm_logger(input, output, session, qc_vals)
 
     @render.data_frame
     def ai_data_table():
@@ -241,16 +260,21 @@ def server(input, output, session):
     def ai_donut_plot():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
+        if df.empty:
+            return ui.p("No data found for your query. The crime type you are searching for has no records or does not exist, " \
+                        "Try rephrasing or broadening your search.",
+                    style="color: #6c757d; text-align: center; padding: 40px;")
         fig = _make_donut_plot(df, input, compact=True)
         return ui.HTML(
             fig.to_html(
-                full_html=False, include_plotlyjs="cdn", config={"responsive": True}
+                full_html=False, include_plotlyjs=False, config={"responsive": True}
             )
         )
 
-    @render_widget
+    @render.ui
     def donut_plot():
-        return _make_donut_plot(filtered_data(), input)
+        fig = _make_donut_plot(filtered_data(), input)
+        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs=False, config={"responsive": True}))
 
     @render_widget
     def ai_map():
@@ -264,20 +288,20 @@ def server(input, output, session):
 
     @reactive.calc
     def filtered_data():
-        selected_years = list(input.input_year())
-        selected_crimes = list(input.input_crime_type())
-        selected_neighbourhoods = list(input.input_neighbourhood())
+        df = filter_crime_data(
+            df=base_df,
+            years=list(input.input_year()),
+            crimes=list(input.input_crime_type()),
+            neighbourhoods=list(input.input_neighbourhood())
+        )
 
-        df = base_df
-        if selected_years:
-            df = df[df["YEAR"].astype(str).isin(selected_years)]
-        if selected_crimes:
-            df = df[df["TYPE"].isin(selected_crimes)]
-        if selected_neighbourhoods:
-            df = df[df["NEIGHBOURHOOD"].isin(selected_neighbourhoods)]
         return df
 
     render_kpis(output, input, filtered_data)
+    
+    @render.ui
+    def selection_summary():
+        return selection_summary_helper(output, input, crimetypes, neighbourhoods)
 
     @reactive.effect
     @reactive.event(input.reset_btn)
@@ -287,20 +311,47 @@ def server(input, output, session):
         ui.update_checkbox_group("input_year", selected=["2025"])
         ui.update_radio_buttons("time_display", selected="monthly")
 
+    @reactive.effect
+    def _enforce_year_selection():
+        selected_years = input.input_year()
+        
+        # Check if selected_years is empty (if the user deselected everything)
+        if not selected_years:
+            # Force the checkbox group back to a default value ("2025")
+            ui.update_checkbox_group("input_year", selected=["2025"])
+            
+            # Let the user know why their action was reversed
+            ui.notification_show("Please select at least one year.", type="warning", duration=3)
+
+    @reactive.effect
+    @reactive.event(input.clear_neighbourhood)
+    def _():
+        ui.update_selectize("input_neighbourhood", selected=[])
+
+    @reactive.effect
+    @reactive.event(input.clear_crime_type)
+    def _():
+        ui.update_selectize("input_crime_type", selected=[])
+        
     @render.ui
     def ai_timeline_chart():
         df = qc_vals.df()
         df = df.to_native() if hasattr(df, "to_native") else df
+        if df.empty:
+            return ui.p("No data found for your query. Only data from the years 2023, 2024 and 2025 exist in our records." \
+                        " Try rephrasing or broadening your search.",
+                    style="color: #6c757d; text-align: center; padding: 40px;")
         fig = _make_timeline_chart(df, input, compact=True)
         return ui.HTML(
             fig.to_html(
-                full_html=False, include_plotlyjs="cdn", config={"responsive": True}
+                full_html=False, include_plotlyjs=False, config={"responsive": True}
             )
         )
 
-    @render_widget
+    @render.ui
     def timeline_chart():
-        return _make_timeline_chart(filtered_data(), input)
+        fig = _make_timeline_chart(filtered_data(), input)
+        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
 
 
 app = App(app_ui, server)

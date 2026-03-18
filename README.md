@@ -20,20 +20,28 @@ Using publicly available data from the Vancouver Police Department (2023--2025),
 
 ## Demo
 
-![Dashboard Demo](img/m3_demo.gif)
+<img src="img/m4-updated-demo.gif" width="800"/>
 
 ## Using the AI explorer
 
 The AI Explorer tab allows you to query the Vancouver crime dataset using plain English. Instead of manually adjusting filters, you can choose that tab and instead type questions like:
 
-- *"Show me theft crimes in Kitsilano in 2024"*
-- *"What are the most common crimes in the downtown area?"*
-- *"Show me break and enter crimes from January 2023"*
+### Example: How a prospective business owner might use the AI Explorer tab
 
-The querychat tool understands informal names, for example, "downtown" will be mapped to "Central Business District" and "vandalism" will be mapped to "Mischief". Once you've queried the data, the map, charts, and dataframe will update to reflect your query. You can also download the filtered data as a CSV using the **Download Filtered CSV** button.
+Say you are considering opening a bakery and want to compare crime activity across a few Vancouver neighbourhoods. Initially, you know that the bakeries are popular in the downtown area. Here is how you might use the AI Explorer to guide your decision:
+
+1. **Start broad** — ask *"Show me the crime density in downtown area in 2025"* to get an overview of crime types in your area of interest. The map will pan to the area of interest, the donut chart will update to show the distribution of crime types from that area, and the timeline will update to reflect crime patterns within that neighborhood from the year 2025.
+2. **Narrow down and start comparing** — follow up with *"Show me theft from vehicle and break and enter commercial in Kitsilano and West End in 2024 and 2025"* to compare business-relevant crime types across neighbourhoods side by side.
+3. **Download the data** — once you have a filtered view, click **Download Filtered CSV** to save the results for your own analysis.
+
+### Tips for querying
+
+- Use filter-style queries to update the dashboard outputs: *"Show me [crime type] in [neighbourhood] in [year]"*
+- The AI understands informal names — "downtown" maps to "Central Business District", "vandalism" maps to "Mischief", and "car theft" maps to "Theft of Vehicle"
+- For queries like *"Which neighbourhood has the most theft?"*, the result will appear only as text in the chat
+- If your query returns no matching records (e.g. *"Show me homicides in Kitsilano in 2025"*), the charts will display a message indicating no data was found for that combination
 
 > **Note:** The AI may still misinterpret queries, depending on the language used. This is a work in progress features that we hope to update with more detailed instructions. You can also use the main **Dashboard** tab to extract extract neighborhood names, crime types and years available.
-
 
 ## Installation & Local Development
 
@@ -65,16 +73,48 @@ Add your API key to the file:
 ANTHROPIC_API_KEY=your_api_key_here
 ```
 
-### 4. Run the dashboard
+### 4. Set up your MongoDB URI
+
+The Chat History tab requires a [MongoDB Cloud](https://cloud.mongodb.com/) Cluster and URI key to connect pymongo to a mongodb cloud cluster. Make sure to set one up if you wish to use the history tool locally.
+
+Once you have set up a cluster, and the `.env` file is created in the above step:
+
+Add your API key to the `.env` file:
+```
+PYMONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/?appName=<cluster>
+```
+
+### 5. Run the dashboard
 
 ```bash
 shiny run src/app.py --reload
 ```
 
-### 5. Open in your browser
+### 6. Open in your browser
 
 ```
 http://127.0.0.1:8000
+```
+
+## Testing
+
+This dashboard includes both unit tests (Pytest) for the core data-filtering logic and Playwright UI tests for the dashboard interface. 
+
+To run the entire test suite locally:
+
+1. Ensure your conda environment is activated 
+```bash
+conda activate vancrimewatch
+```
+
+2. Ensure the Playwright browsers are installed 
+```bash
+playwright install
+```
+
+To run all tests from the root directory:
+```bash
+pytest tests/
 ```
 
 ## Contributing

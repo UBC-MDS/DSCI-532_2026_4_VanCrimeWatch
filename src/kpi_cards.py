@@ -82,6 +82,25 @@ def render_kpis(output, input, filtered_data):
             "badge": "bg-info",
             "text": "text-dark",
         })
+    
+    @output
+    @render.ui
+    def unsafe_block():
+        """Output widget for most crime neighbourhood"""
+        df = filtered_data()
+        if df.empty:
+            return metric_col({"sub1": "", "value": "N/A", "sub2": "No data", "badge": "bg-secondary", "text": ""})
+        block_counts = df['NEIGHBOURHOOD'].value_counts()
+        busiest = block_counts.idxmax()
+        count = int(block_counts.max())
+        pct = round(count / len(df) * 100, 1)
+        return metric_col({
+            "sub1": f"{count:,}",
+            "value": busiest,
+            "sub2": f"{pct}% of total",
+            "badge": "bg-danger",
+            "text": "",
+        })
 
     @output
     @render.ui
@@ -149,8 +168,9 @@ def render_card(title, block, cols):
 def kpi_card_widget():
     """Main widget to collect and display all KPIs"""
     card_details = [
-        ("Least Crime", ui.output_ui("safest_block"), 3),
-        ("Peak Crime Time", ui.output_ui("peak_crime_period"), 3),
+        ("Least Crime", ui.output_ui("safest_block"), 2),
+        ("Most Crime", ui.output_ui("unsafe_block"), 2),
+        ("Peak Crime Time", ui.output_ui("peak_crime_period"), 2),
         ("Total Crimes by Year", ui.output_ui("metrics_row"), 6)
     ]
     return ui.div(
